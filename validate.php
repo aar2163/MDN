@@ -42,7 +42,7 @@ if(isset($_GET["ticket"]))
  {
   if($data['validated'])
   {
-   echo "<p>This ticket has already been used. Please generate a new one.</p>";
+   echo '<p>This ticket has already been validated. <a href="main.php?ticket='.$ticket.'">Go to main menu</a></p>';
   }
   elseif(!isset($data['jobname']) and !isset($_GET['jobname']))
   {
@@ -52,12 +52,24 @@ if(isset($_GET["ticket"]))
    echo '<input type="hidden" name="ticket" value="'.$ticket.'">'."\n";
    echo '<input type="submit">'."\n";
   }
-  elseif(!isset($data['jobname']))
+  elseif(!isset($_GET['software']) and isset($_GET['jobname']))
   {
+   echo '<p><b>Choose a simulation software</b></p>'."\n";
+   echo '<form action="validate.php" method="get">'."\n";
+   echo '<div><ul><li><img width=200 src="images/gromacs_logo.png"></li><li><input type="radio" name="software" value="gromacs"></li></ul>'."\n";
+   if($data['user_email'] == 'aar2163@gmail.com')
+   {
+    echo '<ul><li><img width=200 src="images/namd_logo.jpg"></li><li><input type="radio" name="software" value="namd"></li></ul></div>'."\n";
+   }
+   echo '<br><input type="hidden" name="ticket" value="'.$ticket.'">'."\n";
+   echo '<p><input type="submit"></p>'."\n";
    $data['jobname'] = $_GET['jobname'];
-   $data['validated'] = True;
    update_data($ticket,$data);
-   system("/usr/bin/python init-data.py $ticket gromacs");
+  }
+  elseif(isset($data['jobname']) and isset($_GET['software']))
+  {
+   $software = $_GET['software'];
+   system("/usr/bin/python init-data.py $ticket $software");
    echo "<p>Ticket Validated</p><p><a href=\"main.php?ticket=$ticket\">Start building your network</a></p>";
   }
   else

@@ -13,12 +13,12 @@ data = mdn.get_data(sys.argv[1])
 
 data['base_dir'] = '/var/www/html/uploads/' + sys.argv[1] + '/'
 
-data['gromacs_dir'] = "/home/andre/gromacs463/share/gromacs/top/"
-data['gromacs_bindir'] = "/home/andre/gromacs463/bin/"
+data['validated'] = True
 
 data['software'] = {}
 
 data['software']['name'] = sys.argv[2]
+data['software']['gromacs_bindir'] = "/home/andre/gromacs463/bin/"
 
 data['files'] = {}
 
@@ -36,6 +36,7 @@ files['enerd_npy']     = data['ticket'] + '-enerd.npy'
 if(sys.argv[2] == "gromacs"):
 
  data['software']['binpath'] = "/home/andre/gromacs463/bin"; 
+ data['software']['top_dir'] = "/home/andre/gromacs463/share/gromacs/top/"
 
  files['names'] = ['coordinates','topology','mdp','trajectory','index']
 
@@ -50,14 +51,15 @@ elif(sys.argv[2] == "namd"):
 
  data['software']['binpath'] = "/home/andre/NAMD_2.10_Source/Linux-x86_64-g++"; 
 
- files['names'] = ['coordinates','structure','configuration','parameters','trajectory','index']
+ files['names'] = ['coordinates','structure','configuration','parameters','trajectory','index', 'extended']
 
  files['coordinates'] = {'title': 'Coordinates', 'mandatory': True, 'uploaded': False, 'extension': ['.pdb']}
- files['parameters'] = {'title': 'Parameters', 'mandatory': True, 'uploaded': False, 'extension': ['.inp']}
+ files['parameters'] = {'title': 'Parameters', 'mandatory': True, 'uploaded': False, 'extension': ['.inp', '.par']}
  files['structure'] = {'title': 'Structure', 'mandatory': True, 'uploaded': False, 'extension': ['.psf']}
  files['configuration'] = {'title': 'Configuration', 'mandatory': True, 'uploaded': False, 'extension': ['.conf']}
  files['trajectory'] = {'title': 'Trajectory', 'mandatory': True, 'uploaded': False, 'extension': ['.dcd']}
  files['index'] = {'title': 'Groups', 'mandatory': True, 'uploaded': False, 'extension': ['.ndx']}
+ files['extended'] = {'title': 'ExtendedSystem', 'mandatory': False, 'uploaded': False, 'extension': ['.xsc']}
 
 
 

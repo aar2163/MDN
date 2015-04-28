@@ -31,14 +31,14 @@ function make_steps($data)
  $emdp = $data['files']['energy_mdp'];
 
  $step_cmd['namd']['step0'] = "/bin/bash splitres.sh $ticket $dir $coord $index $netindex 2>&1; echo $?";
- $step_cmd['namd']['step1'] = "/usr/bin/python nodes.py $ticket $dir/$ticket-netindex.ndx 2>&1; echo $?";
+ $step_cmd['namd']['step1'] = "/usr/bin/python nodes.py $ticket 2>&1; echo $?";
  $step_cmd['namd']['step2'] = "/usr/bin/python make_conf.py $ticket 2>&1; echo $?";
  $step_cmd['namd']['step3'] = "cd $dir; $bin/namd2 $econf 2>&1; echo $?";
  $step_cmd['namd']['step4'] = "/usr/bin/python enerd.py $ticket; echo $?";
  $step_cmd['namd']['step5'] = "/usr/bin/python netadj.py $ticket $dir/$ticket-adj.npy; echo $?";
 
  $step_cmd['gromacs']['step0'] = "/bin/bash splitres.sh $ticket $dir $coord $index $netindex 2>&1; echo $?";
- $step_cmd['gromacs']['step1'] = "/usr/bin/python nodes.py $ticket $dir/$ticket-netindex.ndx 2>&1; echo $?";
+ $step_cmd['gromacs']['step1'] = "/usr/bin/python nodes.py $ticket 2>&1; echo $?";
  $step_cmd['gromacs']['step2'] = "cd $dir; $bin/grompp -f $emdp -c $coord -p $top -o $ticket-job.tpr -n $ticket-netindex.ndx -maxwarn 1 2>&1; echo $?";
  $step_cmd['gromacs']['step3'] = "cd $dir; $bin/mdrun -deffnm $ticket-job -rerun $traj -nt 4 2>&1; echo $?";
  $step_cmd['gromacs']['step4'] = "cd $dir; $bin/gmxdump -e $ticket-job.edr 1> $ticket-enematrix.dat; echo $?";

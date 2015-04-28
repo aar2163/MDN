@@ -40,7 +40,7 @@ def read_top(data,dofiles,dotop):
 
  ticket = data['ticket']
  
- gromacs_dir = data['gromacs_dir']
+ top_dir = data['software']['top_dir']
  
  base_dir = data['base_dir']
  
@@ -90,7 +90,7 @@ def read_top(data,dofiles,dotop):
    if(dotop and dofiles):
     add_required(top,name)
     
-   default_file = gromacs_dir + finc
+   default_file = top_dir + finc
    if(dofiles and os.path.isfile(default_file)):
     shutil.copy(default_file,base_dir+bfinc)
     files[name]['uploaded'] = True

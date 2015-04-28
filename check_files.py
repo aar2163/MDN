@@ -101,9 +101,12 @@ def do_bonds(atoms,residues,path,software):
    add_bond(int(d[0]),int(d[1]),atoms,residues)
 
    if(software == 'namd'):
-    add_bond(int(d[2]),int(d[3]),atoms,residues)
-    add_bond(int(d[4]),int(d[5]),atoms,residues)
-    add_bond(int(d[6]),int(d[7]),atoms,residues)
+    if(len(d) > 2):
+     add_bond(int(d[2]),int(d[3]),atoms,residues)
+    if(len(d) > 4):
+     add_bond(int(d[4]),int(d[5]),atoms,residues)
+    if(len(d) > 6):
+     add_bond(int(d[6]),int(d[7]),atoms,residues)
   
    
   if(re.match(mdn.reanytype[software],line)):

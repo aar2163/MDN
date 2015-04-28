@@ -34,7 +34,8 @@ def do_nodes(data,fname):
 
  if(data['software']['name'] == 'namd'):
   bDAT = True
-  f2 = open(data['files']['netindex_dat'], 'w')
+  netindex_dat = data['base_dir'] + data['files']['netindex_dat']
+  f2 = open(netindex_dat, 'w')
 
  st = "energygrps ="
 
@@ -144,10 +145,12 @@ def do_mdp(mdp1,mdp2):
 
 data = mdn.get_data(sys.argv[1])
 
+netindex_ndx = data['base_dir'] + data['files']['netindex_ndx']
+
 
 clear_mols(data)
 
-st = do_nodes(data,sys.argv[2])
+st = do_nodes(data,netindex_ndx)
 
 do_groups(data)
 

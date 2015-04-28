@@ -92,7 +92,7 @@ else {
    }
    if($type == "coordinates" and $data['software']['name'] == "namd")
    { 
-    $bindir = $data['gromacs_bindir'];
+    $bindir = $data['software']['gromacs_bindir'];
     $input =  $dir . $fn;
     $output = $dir . $ticket . "-groups.ndx";
 

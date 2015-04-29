@@ -215,7 +215,8 @@ if(isset($_GET["ticket"]))
 
   if(isset($netindex))
   {
-    $done =  $data['network']['done'];
+    $done            =  $data['network']['done'];
+    $specified_nodes =  $data['index']['specified_nodes'];
 
     if(!$running and !$done)
     {

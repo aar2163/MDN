@@ -98,8 +98,9 @@ def update_data(ticket,data):
 def valid_groups_for_analysis(data,bPrint):
  groups = data['index']['groups']
  names = groups['names']
+ chosen = data['network']['chosen_group']
 
- netset = Set(dic2list(groups[str(1)]['atoms']))
+ netset = Set(dic2list(groups[str(chosen)]['atoms']))
 
  valid = []
 

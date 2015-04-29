@@ -255,6 +255,12 @@ def do_top(data,output):
  for i,n in enumerate(data['topology']['mol_number']):
   output.append("{}: {}\n".format(data['topology']['mol_name'][i],n))
 
+def make_new_group(index,ngroups,group):
+ index['groups']['nr'].append(ngroups)
+ index['groups']['names'].append(group)
+ index['groups'][str(ngroups)] = {}
+ index['groups'][str(ngroups)]['atoms'] = []
+
 
 def do_index(data,output):
 
@@ -280,6 +286,8 @@ def do_index(data,output):
  path = data['base_dir'] + fname
  
  f = open(path,'r')
+
+ inodes = -1
  
  for line in f:
   lc = re.split(r';',line.strip())  # removing comments
@@ -288,20 +296,27 @@ def do_index(data,output):
  
   if (re.match(mdn.reanytype['gromacs'],line)): #index file is always gromacs
    readgroup = True
+   readnode = False
    group = line.translate(string.maketrans("",""), '[]')
    group = group.strip()
    if (re.match(mdn.renode,group)):
     index['specified_nodes'] = True
-   index['groups']['nr'].append(ngroups)
-   index['groups']['names'].append(group)
-   index['groups'][str(ngroups)] = {}
-   index['groups'][str(ngroups)]['atoms'] = []
-   ngroups += 1
+    readnode = True
+    if(inodes == -1): #first time reading node
+     inodes = ngroups
+     make_new_group(index,ngroups,'SPECIFIED_NODES')
+     ngroups += 1
+   else:
+    make_new_group(index,ngroups,group)
+    ngroups += 1
   elif (readgroup and re.match(mdn.reindexline,line)):
    d = re.split(r'\s*',line)
    for entry in d:
     entry = int(entry)
-    index['groups'][str(ngroups-1)]['atoms'].append(entry)
+    if not (readnode):
+     index['groups'][str(ngroups-1)]['atoms'].append(entry)
+    else:
+     index['groups'][str(inodes)]['atoms'].append(entry)
  
  
  for nr in index['groups']['nr']:
@@ -337,7 +352,8 @@ def check_groups(groups,globatoms):
    except:
     l = globatoms[str(a)]
   ###
-  groups[str(group)]['network_ok'] = bOk
+  name = groups['names'][group]
+  groups[str(group)]['network_ok'] = bOk or (name == 'SPECIFIED_NODES')
 
 
 

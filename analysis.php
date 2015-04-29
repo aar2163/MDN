@@ -75,7 +75,6 @@ function do_log($f,$out,$header)
 
 ob_start();
 
-$bin = "/home/andre/gromacs463/bin";
 
 
 if(isset($_GET["ticket"]))

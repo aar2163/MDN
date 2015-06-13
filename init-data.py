@@ -51,7 +51,7 @@ elif(sys.argv[2] == "namd"):
 
  data['software']['binpath'] = "/home/andre/NAMD_2.10_Source/Linux-x86_64-g++"; 
 
- files['names'] = ['coordinates','structure','configuration','parameters','trajectory','index', 'extended']
+ files['names'] = ['coordinates','structure','configuration','parameters','trajectory','index']
 
  files['coordinates'] = {'title': 'Coordinates', 'mandatory': True, 'uploaded': False, 'extension': ['.pdb']}
  files['parameters'] = {'title': 'Parameters', 'mandatory': True, 'uploaded': False, 'extension': ['.inp', '.par']}
@@ -59,7 +59,7 @@ elif(sys.argv[2] == "namd"):
  files['configuration'] = {'title': 'Configuration', 'mandatory': True, 'uploaded': False, 'extension': ['.conf']}
  files['trajectory'] = {'title': 'Trajectory', 'mandatory': True, 'uploaded': False, 'extension': ['.dcd']}
  files['index'] = {'title': 'Groups', 'mandatory': True, 'uploaded': False, 'extension': ['.ndx']}
- files['extended'] = {'title': 'ExtendedSystem', 'mandatory': False, 'uploaded': False, 'extension': ['.xsc']}
+ #files['extended'] = {'title': 'ExtendedSystem', 'mandatory': False, 'uploaded': False, 'extension': ['.xsc']}
 
 
 

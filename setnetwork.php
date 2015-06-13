@@ -7,7 +7,6 @@
 <head>
 <meta charset="UTF-8" />
 <title>Network Setup</title>
-<link rel="stylesheet" type="text/css" media="all" href="styles.css" />
 
 <script src="jquery.min.js"></script>
 

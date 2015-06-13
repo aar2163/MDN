@@ -13,7 +13,7 @@ excl_list = [r'^bincoordinates', r'coordinates', r'structure', \
 
 incl_list = [r'PME', r'exclude', r'paratypecharmm', \
              r'switching', r'switchdist', r'pairlistdist', \
-             r'cutoff']
+             r'cutoff', r'cell']
 
 data = mdn.get_data(sys.argv[1])
 
@@ -38,7 +38,7 @@ if(data['software']['name'] == 'namd'):
  f2.write('energy_run 1\n')
  f2.write('coordinates '    + data['base_dir'] + data['files']['coordinates']['fname'] + '\n')
  f2.write('structure '      + data['base_dir'] + data['files']['structure']['fname'] + '\n')
- f2.write('extendedSystem ' + data['base_dir'] + data['files']['extended']['fname'] + '\n')
+ #f2.write('extendedSystem ' + data['base_dir'] + data['files']['extended']['fname'] + '\n')
  f2.write('parameters '     + data['base_dir'] + data['files']['parameters']['fname'] + '\n')
  f2.write('indexname '      + data['base_dir'] + data['files']['netindex_dat'] + '\n')
  f2.write('enematrixname '  + data['base_dir'] + data['files']['enematrix_dat'] + '\n')

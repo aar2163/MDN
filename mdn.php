@@ -1,5 +1,7 @@
 <?php
 
+ $mdn_max_upload = "100MB";
+
  function update_data($ticket,$data)
  {
   $mongo = new MongoClient();
@@ -62,10 +64,19 @@
  }
  function do_header($ticket)
  {
-  echo "<link href=\"site.css\" media=\"all\" rel=\"stylesheet\" type=\"text/css\">";
+  echo "<link href=\"http://mdn.cheme.columbia.edu/styles.css\" media=\"all\" rel=\"stylesheet\" type=\"text/css\">";
+  echo "<link href=\"http://mdn.cheme.columbia.edu/site.css\" media=\"all\" rel=\"stylesheet\" type=\"text/css\">";
   echo "<header>\n";
-  echo '<a href="documentation.php?ticket='.$ticket.'" id="box-link2"></a>'."\n";
-  echo '<a href="main.php?ticket='.$ticket.'" id="box-link"></a>'."\n";
+  echo '<a href="http://mdn.cheme.columbia.edu" id="box-home"></a>'."\n";
+  if($ticket != 'INVALID')
+  {
+   echo '<a href="http://mdn.cheme.columbia.edu/documentation.php?ticket='.$ticket.'" id="box-link2"></a>'."\n";
+   echo '<a href="http://mdn.cheme.columbia.edu/main.php?ticket='.$ticket.'" id="box-link"></a>'."\n";
+  }
+  else
+  {
+   echo '<a href="http://mdn.cheme.columbia.edu/documentation.php" id="box-link2"></a>'."\n";
+  }
   echo "</header>\n";
  }
  function do_cmd($cmd)
@@ -73,5 +84,17 @@
   unset($out);
   exec($cmd,$out,$err);
   return $out;
+ }
+ function get_software($data,$get)
+ {
+  if(isset($get['software']))
+  {
+   $software = $get['software'];
+  }
+  else
+  {
+   $software = $data['software']['name'];
+  }
+  return $software;
  }
 ?>

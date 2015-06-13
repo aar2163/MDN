@@ -34,6 +34,7 @@ rebonds['gromacs'] =     r'^\s*\[\s*bonds\s*\]\s*$'
 rebonds['namd']    =     r'^\s*\d+\s+!NBOND'
 
 renode  =        r'^\s*Node\_'
+renode_group  =        r'^\s*NodeGroup\_'
 repdb_atom =     r'^ATOM|^HETATM'
 
 max_nnodes = 2000

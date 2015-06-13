@@ -1,10 +1,114 @@
 <?php
- include 'mdn.php';
+include 'mdn.php';
 ?>
 
 <html>
-<body>
+<!DOCTYPE html>
 
+<html lang="en">
+
+
+
+<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+
+<head>
+
+<title>Ortiz Research Group - Chemical Engineering, Columbia University</title>
+
+  <meta charset="utf-8">
+
+  <link rel="stylesheet" href="reset000.css" type="text/css" media="all">
+
+  <link rel="stylesheet" href="style000.css" type="text/css" media="all">
+
+  <script type="text/javascript" src="scripts/jquery-1.js"></script>
+
+  <script type="text/javascript" src="scripts/cufon-yu.js"></script>
+
+  <script type="text/javascript" src="scripts/Colabora.js"></script>
+
+  <script type="text/javascript" src="scripts/cufon-re.js"></script>
+
+  <script type="text/javascript" src="scripts/jquery00.js"></script>
+
+  <!--[if lt IE 7]>
+
+  	<link rel="stylesheet" href="css/ie/ie6.css" type="text/css" media="screen">
+
+    <script type="text/javascript" src="js/ie_png.js"></script>
+
+    <script type="text/javascript">
+
+        ie_png.fix('.png, nav ul img, header nav');
+
+    </script>
+
+  <![endif]-->
+
+</head>
+
+
+
+<body id="page1">
+
+  <div id="main">
+
+  	<!-- header -->
+
+    <header>
+
+      <section class="top">
+
+      	<h1><a href="http://www.columbia.edu/cu/cheme/fac-bios/ortiz/faculty.html">Ortiz Research Group</a></h1>
+
+        <form action id="search-form">
+
+          <fieldset>
+
+          	<input type="text" class="text" value>
+
+          </fieldset>
+
+        </form>
+
+      </section>
+
+
+    </header>
+
+	
+    <!--<div class="wrapper">-->
+
+    	<!-- content -->
+
+      <section id="content">
+
+
+
+
+
+<h2> Welcome to the MDN Server</h2>
+
+<p>MDN is based on an automated protocol for performing network analysis of molecular dynamics trajectories</p>
+
+<p>We employ customized version of the widely used GROMACS and NAMD programs, along with other computational routines implemented by our group to perform this analysis</p>
+
+<p>Using MDN is extremely simple: all that is needed is a GROMACS or NAMD trajectory and input files. Check out the <a href="documentation.php">documentation</a>.</p>
+
+
+<p>Please fill out the form to begin</p>
+
+<form action="" method="post">
+Name: <input type="text" name="name"><br>
+E-mail: <input type="text" name="email"><br>
+<input type="submit">
+</form>
+<br>
+<p><b>Please cite this work as:</b> Ribeiro, AAST; Ortiz, V. Journal of Chemical Theory and Computation, 10, 1762-1769 (2014).</p>
+
+
+
+</div>
 
 <?php
 /*
@@ -13,202 +117,68 @@ Featured on SitePoint.com
 Developed by Craig Buckler (@craigbuckler) of OptimalWorks.net
 */
 
-function do_log($ticket,$step,$out,$header)
+if(isset($_POST["email"]))
 {
 
- $data = get_data($ticket);
+ $email =  $_POST["email"];
+ $name =  $_POST["name"];
 
+ $not_allow[0] = '/\.com/';
+ $not_allow[1] = '/\.org/';
+ $not_allow[2] = '/\.co\.uk$/';
+ $not_allow[3] = '/gmail\./';
+ $not_allow[4] = '/yahoo\./';
+ $not_allow[5] = '/hotmail\./';
 
- $count = count($out);
- $nerr = $out[$count-1];
+ $nallow = count($not_allow);
 
- $key = "step$step";
-
- $nstep = $step+1;
- $nkey = "step$nstep";
-
-
- if($nerr == 0)
+ for($ii=0;$ii<$nallow;$ii++)
  {
-  $data['network'][$key]['success'] = True;
- }
- else
- { 
-  $data['network'][$key]['success'] = False;
-  $data = clear_status($data);
-  echo $data['network']['running'];
-  update_data($ticket,$data);
-  exit();
- }
- $data['network'][$key]['output'] = $out;
- $data['network'][$key]['done']     = True;
- $data['network'][$key]['running']  = False;
-
- $data['network'][$nkey]['running'] = True;
-
- unset($GLOBALS['out']);
-
- update_data($ticket,$data);
-
- $data = null;
-}
-
-function status_running($ticket,$chosen,$data)
-{
- $data['network']['running'] = True;
- $data['network']['chosen_group'] = $chosen;
-
- $list = ['step0','step1','step2','step3','step4','step5','step6'];
-
- $data['network']['steps_nr'] = $list;
-
- $net = $data['network'];
- $net['step0']['title'] = "Creating Index";
- $net['step1']['title'] = "Creating Energy Groups";
- $net['step2']['title'] = "Creating TPR File";
- $net['step3']['title'] = "Calculating Energies";
- $net['step4']['title'] = "Extracting Energies";
- $net['step5']['title'] = "Creating Energy Matrix";
- $net['step6']['title'] = "Creating Adjacency Matrix";
- $data['network'] = $net;
-
- update_data($ticket,$data);
- $data = null;
-}
-
-function clear_status($data)
-{
- $data['network']['running'] = False;
- $data['network']['done'] = True;
-
- echo $data['network']['running'];
-
- $list = ['step0','step1','step2','step3','step4','step5','step6'];
-
- $bOk = True;
- foreach ($list as $item)
- {
-  if(!$bOk)
+  $match = preg_match($not_allow[$ii],$email,$matches);
+  if($match != 0)
   {
-   $data['network'][$item]['success'] = False;
-   $data['network'][$item]['done'] = True;
-   $data['network'][$item]['running'] = False;
-  }
-  if(!$data['network'][$item]['success'])
-  {
-   $bOk = False;
-   $data['network'][$item]['done'] = True;
-   $data['network'][$item]['running'] = False;
+   break;
   }
  }
- $data['network']['success'] = $bOk;
- return $data;
-}
 
-function status_done($ticket)
-{
+ if($match != 0)
+ {
+  if (check_email($email) != True)
+  {
+   print "<p>Automatic access to MDN is only available to researchers that have access to an email account hosted by an University or other research-related institution, and your email address was not recognized as such.</p>";
+   print "<p>Contact us at aar2163@columbia.edu to request MDN access. Please state your name and affiliation.</p>";
+   exit;
+  }
+ }
 
- $data = get_data($ticket);
+ #exit;
+ $ticket = uniqid();
 
- $data = clear_status($data);
+ $dir = "uploads/$ticket";
+
+
+ $subject = 'MDN Ticket';
+ $message = "Dear $name,\r\rYou have requested to use the MDN server.\r\rYour ticket is: $ticket\r\rPlease access the URL http://mdn.cheme.columbia.edu/validate.php?ticket=$ticket to validate your ticket.\r\rHappy simulating,\rMDN Crew";
+ $headers = 'From: aar2163@columbia.edu' . "\r\n" .
+    'Reply-To: aar2163@columbia.edu' . "\r\n" .
+    'X-Mailer: PHP/' . phpversion();
+
+ $message = wordwrap($message, 100, "\r\n");
+
+ mail($email, $subject, $message, $headers);
+
+ echo "<p>An email has been sent to $email</p>";
+
+ system("mkdir -m 775 $dir");
+
+ $data["ticket"] = $ticket;
+ $data["user_name"] = $name;
+ $data["user_email"] = $email;
 
 
  update_data($ticket,$data);
- $data = null;
+  
 }
-
-
-$bin = "/home/andre/gromacs463/bin";
-
-$ticket = $argv[1];
-$netindex = $argv[2];
-
-
-$data = get_data($ticket);
-$dir = $data['base_dir'];
-
-
-$top   = $data['files']['topology']['fname'];
-$conf  = $data['files']['coordinates']['fname'];
-$mdp   = $data['files']['mdp']['fname'];
-$traj  = $data['files']['trajectory']['fname'];
-$index = $data['files']['index']['fname'];
-$specified_nodes = $data['index']['specified_nodes'];
-
-
-status_running($ticket,$netindex,$data);
-
-
-
-
-
-
-#This step creates a $ticket-netindex.ndx file
-$f = "$dir/$ticket-prepenergy-step0";
-if($specified_nodes)
-{
- $cmd = "cp $dir/$index $dir/$ticket-netindex.ndx; echo $?";
-}
-else
-{
- $cmd = "/bin/bash splitres.sh $ticket $dir $conf $index $netindex 2>&1; echo $?";
-}
-exec($cmd,$out,$err);
-$header = "<p><b>Error creating index</b></p>\n";
-do_log($ticket,0,$out,$header);
-
-
-$f = "$dir/$ticket-prepenergy-step1";
-#$cmd = "/usr/bin/perl grp.pl $dir/$ticket-netindex.ndx $dir/$mdp && mv $dir/$mdp-b $dir/$mdp; echo $?";
-$cmd = "/usr/bin/python nodes.py $ticket $dir/$ticket-netindex.ndx $dir/$mdp $dir/$ticket-md.mdp 2>&1; echo $?";
-exec($cmd,$out,$err);
-$header = "<p><b>Error creating energy groups</b></p>\n";
-do_log($ticket,1,$out,$header);
-
-
-
-#This step creates a $ticket-job.tpr file
-$f = "$dir/$ticket-prepenergy-step2";
-$cmd = "cd $dir; $bin/grompp -f $ticket-md.mdp -c $conf -p $top -o $ticket-job.tpr -n $ticket-netindex.ndx -maxwarn 1 2>&1; echo $?";
-exec($cmd,$out,$err);
-$header = "<p><b>Error creating tpr file</b></p>\n";
-do_log($ticket,2,$out,$header);
-
-
-$f = "$dir/$ticket-prepenergy-step3";
-$cmd = "cd $dir; $bin/mdrun -deffnm $ticket-job -rerun $traj -nt 4 2>&1; echo $?";
-exec($cmd,$out,$err);
-$header = "<p><b>Error calculating energies</b></p>\n";
-do_log($ticket,3,$out,$header);
-
-$f = "$dir/$ticket-prepenergy-step4";
-$cmd = "cd $dir; $bin/gmxdump -e $ticket-job.edr 1> $ticket-enematrix.dat; echo $?";
-exec($cmd,$out,$err);
-$header = "<p><b>Error extracting energies</b></p>\n";
-do_log($ticket,4,$out,$header);
-
-$f = "$dir/$ticket-prepenergy-step5";
-#$cmd = "/usr/bin/perl enerd.pl $dir/$ticket-eneout $dir/$ticket-netindex.ndx $dir/$ticket-enerd.pld; echo $?";
-$cmd = "/usr/bin/python enerd.py $ticket; echo $?";
-exec($cmd,$out,$err);
-$header = "<p><b>Error creating energy matrix</b></p>\n";
-do_log($ticket,5,$out,$header);
-
-$f = "$dir/$ticket-prepenergy-step6";
-#$cmd = "/usr/bin/perl netadj.pl $dir/$ticket-adj.pld $dir/$ticket-netindex.ndx $dir/$top $string 1> $dir/$ticket-netout; echo $?";
-$cmd = "/usr/bin/python netadj.py $ticket $dir/$ticket-adj.npy; echo $?";
-exec($cmd,$out,$err);
-$header = "<p><b>Error creating adjacency matrix</b></p>\n";
-do_log($ticket,6,$out,$header);
-
-array_map('unlink', glob("$dir/$ticket-job.*"));
-
-chmod("$dir/$ticket-enerd.npy",0664);
-chmod("$dir/$ticket-adj.npy",0664);
-chmod("$dir/$ticket-netindex.ndx",0664);
-
-status_done($ticket);
-
 
 ?>
 

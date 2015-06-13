@@ -25,6 +25,8 @@ if not data['index']['specified_nodes']:
   print ii,n,groups[str(ii)]['network_ok']
 else:
  print 0,'SPECIFIED_NODES',True
+ for ii,n in enumerate(names):
+  print ii,n,groups[str(ii)]['network_specified']
 
 
 

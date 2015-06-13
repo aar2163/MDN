@@ -89,11 +89,11 @@ include 'mdn.php';
 
 <h2> Welcome to the MDN Server</h2>
 
-<p>MDN is based on an automated protocol for performing network analysis of molecular dynamics trajectories</p>
+<p>MDN is based on an automated protocol for performing network analysis of molecular dynamics trajectories.</p>
 
-<p>We employ a customized version of the widely used GROMACS program, along with other computational routines implemented by our group to perform this analysis</p>
+<p>We employ customized versions of the widely used <a href="http://www.gromacs.org">GROMACS</a> and <a href="http://www.ks.uiuc.edu/Research/namd/">NAMD</a> programs, along with other computational routines implemented by our group to perform this analysis.</p>
 
-<p>Using MDN is extremely simple: all that is needed is a GROMACS trajectory and input files</p>
+<p>Using MDN is extremely simple: all that is needed is a GROMACS or NAMD trajectory and input files. Check out the <a href="documentation.php">documentation</a>.</p>
 
 
 <p>Please fill out the form to begin</p>

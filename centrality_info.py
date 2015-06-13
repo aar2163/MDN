@@ -26,7 +26,7 @@ for ii,n in enumerate(names):
 
  if (re.match(mdn.renode,n)):
   continue
- print ii,n,(s.issubset(netset) and  groups[str(ii)]['network_ok'])
+ print ii,n,((s.issubset(netset) and  groups[str(ii)]['network_ok']) or groups[str(ii)]['network_specified'])
  #if(ii == 18):
  # print s
 

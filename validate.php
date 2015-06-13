@@ -57,10 +57,10 @@ if(isset($_GET["ticket"]))
    echo '<p><b>Choose a simulation software</b></p>'."\n";
    echo '<form action="validate.php" method="get">'."\n";
    echo '<div><ul><li><img width=200 src="images/gromacs_logo.png"></li><li><input type="radio" name="software" value="gromacs"></li></ul>'."\n";
-   if($data['user_email'] == 'aar2163@gmail.com')
-   {
+   #if($data['user_email'] == 'aar2163@gmail.com')
+   #{
     echo '<ul><li><img width=200 src="images/namd_logo.jpg"></li><li><input type="radio" name="software" value="namd"></li></ul></div>'."\n";
-   }
+   #}
    echo '<br><input type="hidden" name="ticket" value="'.$ticket.'">'."\n";
    echo '<p><input type="submit"></p>'."\n";
    $data['jobname'] = $_GET['jobname'];

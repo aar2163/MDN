@@ -70,7 +70,7 @@ def do_nodes(data,fname):
  
     if bDAT:
      node_nr = re.split(r'_',last_node)[1]
-     f2.write("{} {}\n".format(entry-1,node_nr))
+     f2.write("{} {}\n".format(entry-1,node_nr)) #NAMD index = GROMACS index - 1
 
     try: 
      nodes[last_node]['atoms'].append(entry)

@@ -256,7 +256,7 @@ else {
     echo "<legend>File Upload: $type</legend>";
     echo "<p><b>$popup</b></p>\n";
  
-    echo "<input type=\"hidden\" id=\"MAX_FILE_SIZE\" name=\"MAX_FILE_SIZE\" value=\"50000000\" />";
+    echo "<input type=\"hidden\" id=\"MAX_FILE_SIZE\" name=\"MAX_FILE_SIZE\" value=\"100000000\" />";
 
     echo "<input type=\"hidden\" name=\"ticket\" value=\"$ticket\" />";
 
@@ -322,16 +322,27 @@ if (isset($post_out))
 
 }
 
-$cmd = "python check_files.py $ticket 2> $dir/saida; echo $?";
+$cmd = "python check_files.py $ticket 2> /dev/null; echo $?";
 unset($out);
 exec($cmd,$out,$err);
 $valid = ($out[count($out)-1] == 0);
+$error = ($out[count($out)-1] == 2);
 
 if($valid)
 {
  $data = get_data($ticket);
  echo "<p><b>Files successfully uploaded</b></p>\n";
  echo "<p><b>Here is a brief overview of your files: </b></p>\n";
+ $out = $data['files']['upload_log'];
+ for($ii=0;$ii<count($out);$ii++)
+ {
+  $s = $out[$ii];
+  echo "<p><b>$s</b></p>\n";
+ }
+}
+elseif($error)
+{
+ echo "<p><b>There are some errors with your files:</b></p>\n";
  $out = $data['files']['upload_log'];
  for($ii=0;$ii<count($out);$ii++)
  {

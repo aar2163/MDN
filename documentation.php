@@ -38,10 +38,11 @@ function recp(id) {
 
  if(!isset($data['ticket']))
  {
-  echo "<p>Invalid ticket.</p>";
+  $ticket = 'INVALID';
  }
- else
- {
+ 
+ $software = $data['software']['name'];
+
   do_header($ticket);
 
   echo "<p><b><h3>References:</h3></b></p>\n";
@@ -58,8 +59,9 @@ function recp(id) {
 
   echo "<p><b><h3>MDN Usage:</h3></b></p>\n";
 
-  echo '<p><a href="documentation/file-upload.html">File Upload</a></p>';
-  echo '<p><a href="documentation/choosing-groups.html">Choosing Groups</a></p>';
+  echo '<p><a href="documentation/file-upload.php?ticket='.$ticket.'&software='.$software.'">File Upload</a></p>';
+  echo '<p><a href="documentation/choosing-groups.php?ticket='.$ticket.'&software='.$software.'">Choosing Groups</a></p>';
+  echo '<p><a href="documentation/custom-nodes.php?ticket='.$ticket.'&software='.$software.'">Custom Network Definition</a></p>';
   echo '<p><a href="documentation/network-construction.html">Network Construction</a></p>';
   echo '<p><a href="documentation/pathways.html">Selecting Pathways</a></p>';
   echo '<p><a href="documentation/output.html">MDN Output</a></p>';
@@ -67,7 +69,6 @@ function recp(id) {
   echo "<p><b><h3>Network Theory Concepts:</h3></b></p>\n";
   echo '<p><a href="documentation/network-analysis.html">Network Centrality, Node Betweenness, and Network Coupling</a></p>';
 
- }
 ?>
 
 

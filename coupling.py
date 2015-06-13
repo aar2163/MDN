@@ -29,7 +29,7 @@ def get_nodes(atoms,nodeset):
  s = Set(atoms)
  n = []
  for ii,i in enumerate(nodeset):
-  if i.issubset(s):
+  if i.issubset(s) or data['index']['specified_nodes']:
    n.append(ii)
  return n
 
@@ -82,12 +82,12 @@ for i in range(len(a)):
 
 fname = data['base_dir'] + data['ticket'] + '-coupling.log'
 
+
 add_output(fname,data['output_files'])
 
 with open(fname,'w') as f:
 
  glob = get_effic(effic,efficid,nodelist[0],nodelist[0])
-
  f.write("Global: {}\n\n".format(glob))
  for ii,i in enumerate(valid):
   iname = data['index']['groups']['names'][i]

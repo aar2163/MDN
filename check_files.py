@@ -288,6 +288,9 @@ def do_index(data,output):
  f = open(path,'r')
 
  inodes = -1
+ nnodes = -1
+
+ node_atoms = {}
  
  for line in f:
   lc = re.split(r';',line.strip())  # removing comments
@@ -297,11 +300,16 @@ def do_index(data,output):
   if (re.match(mdn.reanytype['gromacs'],line)): #index file is always gromacs
    readgroup = True
    readnode = False
+   read_node_group = False
+
    group = line.translate(string.maketrans("",""), '[]')
    group = group.strip()
+
    if (re.match(mdn.renode,group)):
     index['specified_nodes'] = True
     readnode = True
+    nnodes += 1
+
     if(inodes == -1): #first time reading node
      inodes = ngroups
      make_new_group(index,ngroups,'SPECIFIED_NODES')
@@ -309,14 +317,26 @@ def do_index(data,output):
    else:
     make_new_group(index,ngroups,group)
     ngroups += 1
+    if re.match(mdn.renode_group,group):
+     read_node_group = True
+
   elif (readgroup and re.match(mdn.reindexline,line)):
    d = re.split(r'\s*',line)
    for entry in d:
     entry = int(entry)
-    if not (readnode):
+    if not readnode and not read_node_group:
      index['groups'][str(ngroups-1)]['atoms'].append(entry)
+    elif read_node_group:
+     for atom in node_atoms[str(entry)]:
+      index['groups'][str(ngroups-1)]['atoms'].append(atom)
     else:
      index['groups'][str(inodes)]['atoms'].append(entry)
+
+     if not str(nnodes) in node_atoms:
+      node_atoms[str(nnodes)] = []
+
+     node_atoms[str(nnodes)].append(entry)
+      
  
  
  for nr in index['groups']['nr']:
@@ -354,6 +374,7 @@ def check_groups(groups,globatoms):
   ###
   name = groups['names'][group]
   groups[str(group)]['network_ok'] = bOk or (name == 'SPECIFIED_NODES')
+  groups[str(group)]['network_specified'] = True if re.match(mdn.renode_group,name) else False
 
 
 
@@ -387,19 +408,35 @@ if not files['upload_complete']:
 if(estat == 0):
  files['upload_complete'] = True
 
-#PrevStatus = False  # testing only (will analyze topology regardless of status)
+PrevStatus = False  # testing only (will analyze topology regardless of status)
 
 output = []
 
 
 if(estat == 0 and not PrevStatus):
- do_top(data,output)
- do_index(data,output)
- globatoms = mdn.do_globatoms(data['topology'])
- check_groups(data['index']['groups'],globatoms)
+ errors = []
+ try:
+  do_top(data,output)
+ except:
+  errors.append('topology')
+ try:
+  do_index(data,output)
+  globatoms = mdn.do_globatoms(data['topology'])
+  check_groups(data['index']['groups'],globatoms)
+ except:
+  errors.append('index')
+
  #check_input
  data['network'] = {}
  data['network']['available'] = True
+ if len(errors) > 0:
+  estat = 2
+  data['network']['available'] = False
+  s = ''
+  for i in errors:
+   s = s + i + ' '
+  output = [s]
+
  data['files']['upload_log'] = output
 
 

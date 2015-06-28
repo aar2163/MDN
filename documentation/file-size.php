@@ -59,12 +59,12 @@ $(document).ready(function(){
 
 <p>Computer simulations of biomolecules usually generate a lot of information about the systems under consideration. For these simulations to be useful, the description of the system's energy and forces must be carefully considered. One important factor that significantly affects the behavior of biomolecules is the presence of solvent molecules. These are usually explicitly included in the simulation box, and a significant fraction of the total data output is likely due to solvent molecules.</p>
 
-<p>While including solvent molecules is extremely desirable for most simulations, <b>the uploaded trajectory does not need to include them</b>. Network analysis is concerned with atoms/residues of solute molecules, such as ligands, proteins, and other types of biomolecules. In a very special case, you might want to include specific water molecules in your network, but these would need to be specified as a <a href="choosing-groups.php">separate group</a>.</p>
+<p>While including solvent molecules is extremely desirable when simulating most biomolecular systems, <b>the uploaded trajectory does not need to include them</b>. Network analysis is concerned with atoms/residues of solute molecules, such as ligands, proteins, and other types of biomolecules. Only in very special cases, you might want to include specific water molecules in your network, but these would need to be specified as a <a href="choosing-groups.php">separate group</a>.</p>
 
 <p>Excluding water molecules from your trajectory thus significantly reduces the corresponding file size. It also makes network construction and analysis extremely faster. In addition, the number of frames can be adjusted so the trajectory is below the <?php echo $mdn_max_upload;?> limit.</p>
 
 
-<p class="gromacs_header"><img src="http://mdn.cheme.columbia.edu/images/next-icon.png" width=12><b>GROMACS</b></p>
+<p class="gromacs_header"><img latex="hide" src="http://mdn.cheme.columbia.edu/images/next-icon.png" width=12><b>GROMACS</b></p>
 
 <p class="gromacs"><u>These tasks can be easily accomplished with the GROMACS tool trjconv.</u></p> 
 
@@ -81,26 +81,20 @@ $(document).ready(function(){
 
 <p class="gromacs"><b>Index File (.ndx)</b>: Use make_ndx to generate an index file for your system. Use the modified .gro file as input.</p>
 
-<p class="namd_header"><img src="http://mdn.cheme.columbia.edu/images/next-icon.png" width=12><b>NAMD</b></p>
+<p class="namd_header"><img latex="hide" src="http://mdn.cheme.columbia.edu/images/next-icon.png" width=12><b>NAMD</b></p>
 
 <p class="namd"><u>These tasks can be easily accomplished with the NAMD tool catdcd.</u></p> 
 
 <p class="namd"><code>catdcd -i index.dat -s coordinates.pdb -stype pdb -o traj_dry.dcd -otype dcd traj.dcd</code></p>
 
-<p class="namd">You will need an index file containing the indices of non-solvent atoms. This can be done with the VMD Tk Console:</p>
+<p class="namd">You will need an index file (index.dat) containing the indices of non-solvent atoms. This can be done with the VMD Tk Console:</p>
 
-<p class="namd">
-<code>set selection [atomselect top "not water"]<br>
-set index [$selection get index]<br>
-set outfile [open "index.dat" w]<br>
-puts $outfile $index<br>
-close $outfile</code>
-</p>
+<p class="namd"><img src="http://mdn.cheme.columbia.edu/images/notwater_script.png" border=5></p>
 
 <p class="namd"><b>Please note that all uploaded files must match the trajectory.</b><p>
 
 <p class="namd"><b>Coordinates (.pdb)</b>: Use VMD to create a PDB file without solvent molecules</p>
-<p class="namd"><b>Structure (.psf)</b>: Use VMD to create a PSF file without solvent molecules.</p>
+<p class="namd"><b>Structure (.psf)</b>: Use the psfgen tool in VMD to create a PSF file without solvent molecules.</p>
 
 </body>
 </html>

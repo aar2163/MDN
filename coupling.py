@@ -49,6 +49,7 @@ data = mdn.get_data(sys.argv[1])
 
 valid = mdn.valid_groups_for_analysis(data,False)
 
+
 nodeset = get_nodeset(data)
 
 nodelist = get_nodelist(valid,nodeset)
@@ -127,6 +128,31 @@ for ii,i in enumerate(valid):
     for k in atoms:
      f.write("{},{},{}\n".format(k,len(atoms),value))
     atoms = []
+
+ for hh,h in enumerate(valid):
+  hname = data['index']['groups']['names'][h]
+  fname = data['base_dir'] + data['ticket'] + '-coupling-' + iname + '-' + hname + '.csv'
+  add_output(fname,data['output_files'])
+
+  with open(fname,'w') as f:
+   bLast = False
+   f.write("Atom Number,Residue Size,Coupling\n")
+   for j in mdn.dic2list(data['network']['nodes'][hname]['atoms']):
+    d1 = globatoms[str(j)]
+
+    try:
+     d2 = globatoms[str(j+1)]
+    except:
+     bLast = True
+   
+    atoms.append(j)
+
+    if not mdn.same_residue(d1,d2) or bLast == True:
+     node = get_nodes(atoms,nodeset)
+     value = get_effic(effic,efficid,node,nodelist[ii])
+     for k in atoms:
+      f.write("{},{},{}\n".format(k,len(atoms),value))
+     atoms = []
 
 
 mdn.update_data(sys.argv[1],data)

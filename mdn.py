@@ -108,6 +108,7 @@ def valid_groups_for_analysis(data,bPrint):
  for ii,n in enumerate(names):
   s = Set(dic2list(groups[str(ii)]['atoms']))
   cond = (s.issubset(netset) and groups[str(ii)]['network_ok'] and not re.match(renode,n))
+  cond = cond or (groups[str(ii)]['network_specified'] and not re.match(renode,n))
   if(bPrint):
    print ii,n,cond
   if(cond):

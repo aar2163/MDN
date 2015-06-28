@@ -61,13 +61,12 @@ function recp(id) {
 
   echo '<p><a href="documentation/file-upload.php?ticket='.$ticket.'&software='.$software.'">File Upload</a></p>';
   echo '<p><a href="documentation/choosing-groups.php?ticket='.$ticket.'&software='.$software.'">Choosing Groups</a></p>';
-  echo '<p><a href="documentation/custom-nodes.php?ticket='.$ticket.'&software='.$software.'">Custom Network Definition</a></p>';
-  echo '<p><a href="documentation/network-construction.html">Network Construction</a></p>';
-  echo '<p><a href="documentation/pathways.html">Selecting Pathways</a></p>';
-  echo '<p><a href="documentation/output.html">MDN Output</a></p>';
+  echo '<p><a href="documentation/network-construction.php?ticket='.$ticket.'&software='.$software.'">Network Construction</a></p>';
+  echo '<p><a href="documentation/pathways.php?ticket='.$ticket.'&software='.$software.'">Network Analysis: Pathway Selection</a></p>';
+  echo '<p><a href="documentation/output.php?ticket='.$ticket.'&software='.$software.'">MDN Output</a></p>';
 
   echo "<p><b><h3>Network Theory Concepts:</h3></b></p>\n";
-  echo '<p><a href="documentation/network-analysis.html">Network Centrality, Node Betweenness, and Network Coupling</a></p>';
+  echo '<p><a href="documentation/network-analysis.php?ticket='.$ticket.'&software='.$software.'">Network Centrality, Node Betweenness, and Network Coupling</a></p>';
 
 ?>
 

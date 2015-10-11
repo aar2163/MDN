@@ -132,6 +132,11 @@ def do_mdp(mdp1,mdp2):
    #node = line.translate(string.maketrans("",""), '[]')
    #node = node.strip()
    #st = st + ' ' + node
+   if re.search(r'coulombtype\s*=\s*pme',l.lower()):
+    line = "coulombtype = cutoff\n"
+   if re.search(r'cutoff-scheme\s*=\s*verlet',l.lower()):
+    line = "cutoff-scheme = group\n"
+
    fout.write(line)
    
  f.close()

@@ -93,7 +93,7 @@ include 'mdn.php';
 
 <p>We employ customized versions of the widely used <a href="http://www.gromacs.org">GROMACS</a> and <a href="http://www.ks.uiuc.edu/Research/namd/">NAMD</a> programs, along with other computational routines implemented by our group to perform this analysis.</p>
 
-<p>Using MDN is extremely simple: all that is needed is a GROMACS or NAMD trajectory and input files. Check out the <a href="documentation.php">documentation</a>.</p>
+<p>Using MDN is extremely simple: all that is needed is a GROMACS or NAMD trajectory and input files. Check out the <a href="mdn_manual.pdf">documentation</a>.</p>
 
 
 <p>Please fill out the form to begin</p>

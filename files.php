@@ -177,7 +177,12 @@ else {
                         }
                         else
                         {
-			 echo '<li><span class="tip">'. $v[$ii][3] .'</span></li>';
+                         $name = $v[$ii][3];
+                         if (strlen($name) > 20) 
+                         {
+                          $name = "..." . substr($name, -20);
+                         }
+			 echo '<li><span class="tip">'. $name .'</span></li>';
                         }
                   }
   echo '      </ul>

@@ -29,7 +29,9 @@ def get_nodes(atoms,nodeset):
  s = Set(atoms)
  n = []
  for ii,i in enumerate(nodeset):
-  if i.issubset(s) or data['index']['specified_nodes']:
+  #print len(atoms), ii, i.issubset(s)
+  #if i.issubset(s) or data['index']['specified_nodes']:
+  if i.issubset(s):
    n.append(ii)
  return n
 
@@ -52,7 +54,10 @@ valid = mdn.valid_groups_for_analysis(data,False)
 
 nodeset = get_nodeset(data)
 
+
 nodelist = get_nodelist(valid,nodeset)
+
+
 
 
 a = []
@@ -107,6 +112,8 @@ globatoms = mdn.do_globatoms(data['topology'])
 for ii,i in enumerate(valid):
  iname = data['index']['groups']['names'][i]
  fname = data['base_dir'] + data['ticket'] + '-coupling-' + iname + '.csv'
+
+ """
  add_output(fname,data['output_files'])
 
  with open(fname,'w') as f:
@@ -128,16 +135,20 @@ for ii,i in enumerate(valid):
     for k in atoms:
      f.write("{},{},{}\n".format(k,len(atoms),value))
     atoms = []
+ """
 
  for hh,h in enumerate(valid):
+  if h == i:
+   continue
   hname = data['index']['groups']['names'][h]
   fname = data['base_dir'] + data['ticket'] + '-coupling-' + iname + '-' + hname + '.csv'
   add_output(fname,data['output_files'])
+  #print iname,hname
 
   with open(fname,'w') as f:
    bLast = False
    f.write("Atom Number,Residue Size,Coupling\n")
-   for j in mdn.dic2list(data['network']['nodes'][hname]['atoms']):
+   for j in mdn.dic2list(data['index']['groups'][str(h)]['atoms']):
     d1 = globatoms[str(j)]
 
     try:
@@ -150,6 +161,7 @@ for ii,i in enumerate(valid):
     if not mdn.same_residue(d1,d2) or bLast == True:
      node = get_nodes(atoms,nodeset)
      value = get_effic(effic,efficid,node,nodelist[ii])
+     #print value
      for k in atoms:
       f.write("{},{},{}\n".format(k,len(atoms),value))
      atoms = []

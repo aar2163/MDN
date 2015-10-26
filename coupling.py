@@ -94,7 +94,9 @@ add_output(fname,data['output_files'])
 with open(fname,'w') as f:
 
  glob = get_effic(effic,efficid,nodelist[0],nodelist[0])
- f.write("Global: {}\n\n".format(glob))
+
+ #f.write("Global: {}\n\n".format(glob)) #global is ill-defined in some cases
+
  for ii,i in enumerate(valid):
   iname = data['index']['groups']['names'][i]
   for jj,j in enumerate(valid):

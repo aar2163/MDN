@@ -165,7 +165,7 @@ if(isset($_GET["ticket"]))
      if($valid)
      {
      }
-     system("/usr/bin/python centrality_atoms.py $ticket $output $output_atoms");
+     system("/usr/bin/python centrality_atoms.py $ticket $output $output_atoms $enerd");
      system("/usr/bin/python coupling.py $ticket $effic");
      system("/usr/bin/python output.py $ticket $zip");
     }

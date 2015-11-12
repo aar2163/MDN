@@ -7,10 +7,13 @@ import mdn
 
 ## Main code
 
+##usage: centrality_atoms.py ticket centrality.csv centrality_atoms.csv enerd.npy
+
 
 data = mdn.get_data(sys.argv[1])
 
-data['output_files'] = [sys.argv[2],sys.argv[3],'make_pdb.py']
+
+data['output_files'] = [sys.argv[2], sys.argv[3], sys.argv[4], 'make_pdb.py']
 
 mdn.update_data(sys.argv[1],data)
 

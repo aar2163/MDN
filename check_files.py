@@ -340,14 +340,21 @@ def do_index(data,output):
 
    # Check if group is a node
    if (re.match(mdn.renode, group)):
+
+    """
+     If group is node, we create group SPECIFIED_NODES if it has not been created
+     We will add all node atoms to this group
+     inodes variable should store the index of this group
+    """
     index['specified_nodes'] = True
     readnode = True
     nnodes += 1
 
-    if(inodes == -1): #first time reading node
+    if(inodes == -1): #first time reading a node
      inodes = ngroups
      make_new_group(index, ngroups, 'SPECIFIED_NODES')
      ngroups += 1
+
    else:
     make_new_group(index, ngroups, group)
     ngroups += 1
@@ -389,6 +396,7 @@ def do_index(data,output):
       
  
  
+ # Now go over all groups and save atom list in optimized format
  for nr in index['groups']['nr']:
   index['groups'][str(nr)]['atoms'] = mdn.list2dic(index['groups'][str(nr)]['atoms'])
  
@@ -400,10 +408,25 @@ def do_index(data,output):
 def check_groups(groups,globatoms):  
  for group in groups['nr']:
   bOk = True
+  """
+   network_ok will be True only if all residues are complete or 
+   we are using SPECIFIED_NODES
+  """
+
+  # Convert stored atom list to full array
   groupatoms = mdn.dic2list(groups[str(group)]['atoms'])
+
   nres = 0
   for a in groupatoms:
    try:
+    """
+     this fails for the first atom
+     for the remaining atoms we can compare residues
+     Note that atom indices are local to the molecule, so we need to use globatoms
+     globatoms format : [atom_number,residue_number,molecule_name,molecule,number]
+    """
+   
+
     lp = l
     l  = globatoms[str(a)]
     lgp = globatoms[str(a-1)]
@@ -411,16 +434,20 @@ def check_groups(groups,globatoms):
     if(mdn.same_residue(l,lgp)):
      if (mdn.same_residue(l,lp)):
       if(lgp[0] != lp[0]):
+       # This enforces global(a-1) = global(a) - 1
        bOk = False
      else:
+      # This catches group definitions that do not include the whole residue
       bOk = False
     else:
+     # if current atom is not in same residue as previous atom, increase nres
      nres += 1
      if(nres > mdn.max_nnodes):
       bOk = False
      
    except:
     l = globatoms[str(a)]
+
   ###
   name = groups['names'][group]
   groups[str(group)]['network_ok'] = bOk or (name == 'SPECIFIED_NODES')
@@ -433,8 +460,9 @@ def check_groups(groups,globatoms):
 
 ### Main code
 
+ticket = sys.argv[1]
 
-data = mdn.get_data(sys.argv[1])
+data = mdn.get_data(ticket)
 
 files = data['files']
 names = files['names']
@@ -456,14 +484,22 @@ if not files['upload_complete']:
 
 
 if(estat == 0):
+ CurrStatus = True
  files['upload_complete'] = True
+else:
+ CurrStatus = False
 
-PrevStatus = False  # testing only (will analyze topology regardless of status)
+
+ForceAnalysis = False
 
 output = []
 
+"""
+ Check if file upload is complete AND
+ this has just happened
+"""
 
-if(estat == 0 and not PrevStatus):
+if (CurrStatus and (not PrevStatus or ForceAnalysis)):
  errors = []
  # Process topology first
  try:
@@ -474,14 +510,21 @@ if(estat == 0 and not PrevStatus):
  # Now do index file
  try:
   do_index(data,output)
+
+  """
+   Note that atom indices are local to the molecule, so we need to use globatoms
+  """
   globatoms = mdn.do_globatoms(data['topology'])
-  check_groups(data['index']['groups'],globatoms)
+
+  # Loop over all groups, and find if they should be available for network setup
+  check_groups(data['index']['groups'], globatoms)
  except:
   errors.append('index')
 
  #check_input
  data['network'] = {}
  data['network']['available'] = True
+
  if len(errors) > 0:
   estat = 2
   data['network']['available'] = False
@@ -496,8 +539,12 @@ if(estat == 0 and not PrevStatus):
 
 
 
-mdn.update_data(sys.argv[1],data)
+mdn.update_data(ticket, data)
 
+"""
+ estat is 0 if file_upload is complete AND 
+ do_top and do_index were successful
+"""
 exit(estat)  
 
 

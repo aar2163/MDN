@@ -7,11 +7,10 @@
 
 
 <?php
-/*
-Server-side PHP file upload code for HTML5 File Drag & Drop demonstration
-Featured on SitePoint.com
-Developed by Craig Buckler (@craigbuckler) of OptimalWorks.net
-*/
+
+/*This script is run on PBS/Torque, called by setnetwork.php 
+  Usage: prepenecore.php ticket netindex
+  where netindex is the index of the chosen group for network analysis */
 
 function make_steps($data)
 {

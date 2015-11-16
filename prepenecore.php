@@ -80,8 +80,10 @@ function make_steps($data)
  return $steps;
 }
 
-function do_log($ticket,$step,$out,$header)
+function do_log($ticket,$step,$out,$header, $list)
 {
+
+ /* Upload database with information about this step */
 
  $data = get_data($ticket);
 
@@ -102,7 +104,11 @@ function do_log($ticket,$step,$out,$header)
  else
  { 
   $data['network'][$key]['success'] = False;
-  $data = clear_status($data);
+
+  /* This step failed, so we abort the whole thing,
+     and update the status of subsequent steps */
+
+  $data = clear_status($data, $list);
   echo $data['network']['running'];
   update_data($ticket,$data);
   exit();
@@ -167,14 +173,12 @@ function status_running($ticket,$chosen,$data)
 
 }
 
-function clear_status($data)
+function clear_status($data, $list)
 {
  $data['network']['running'] = False;
  $data['network']['done'] = True;
 
  echo $data['network']['running'];
-
- $list = ['step0','step1','step2','step3','step4','step5'];
 
  $bOk = True;
  foreach ($list as $item)
@@ -196,12 +200,12 @@ function clear_status($data)
  return $data;
 }
 
-function status_done($ticket)
+function status_done($ticket, $list)
 {
 
  $data = get_data($ticket);
 
- $data = clear_status($data);
+ $data = clear_status($data, $list);
 
 
  update_data($ticket,$data);
@@ -229,6 +233,8 @@ $data = status_running($ticket,$netindex,$data);
 
 $steps = make_steps($data);
 
+/* network: steps_nr is temporarily stored in $data by status_running, but it's not uploaded to database, so we 
+   save it as $list */
 
 $list = $data['network']['steps_nr'];
 $data = null;
@@ -238,7 +244,7 @@ for($ii=0;$ii<count($list);$ii++)
  $item = "step".$ii;
  print "$item\n";
  exec($steps[$item]['cmd'],$out,$err);
- do_log($ticket,$ii,$out,$steps[$item]['header']);
+ do_log($ticket,$ii,$out,$steps[$item]['header'], $list);
 }
 
 array_map('unlink', glob("$dir/$ticket-job.*"));
@@ -249,7 +255,7 @@ chmod("$dir/$ticket-enerd.npy",0664);
 chmod("$dir/$ticket-adj.npy",0664);
 chmod("$dir/$ticket-netindex.ndx",0664);
 
-status_done($ticket);
+status_done($ticket, $list);
 
 
 ?>

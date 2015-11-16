@@ -78,7 +78,8 @@ if(isset($_GET["ticket"]))
    }
 
 
-   $nnodes = trim(`/usr/bin/python get_nnodes.py $ticket`);
+   //$nnodes = trim(`/usr/bin/python get_nnodes.py $ticket`);
+   $nnodes = count($data['network']['nodes']['names']);
 
 
    if(isset($reset) and $reset == "yes")

@@ -48,6 +48,8 @@ if not software in possible_software:
  print "Fatal error: invalid software name"
  exit()
 
+
+
 if(software == "gromacs"):
 
  data['software']['binpath'] = "/home/andre/gromacs463/bin"; 
@@ -78,11 +80,6 @@ elif(software == "namd"):
 
 
 
-else:
- print "Fatal error: invalid program"
- exit()
- 
-
-mdn.update_data(ticket ,data)
+mdn.update_data(ticket, data)
 
 

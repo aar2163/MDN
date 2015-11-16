@@ -123,6 +123,8 @@ if(isset($_POST["email"]))
  $email =  $_POST["email"];
  $name =  $_POST["name"];
 
+ /* We dont' want to allow any non-academic emails */
+
  $not_allow[0] = '/\.com/';
  $not_allow[1] = '/\.org/';
  $not_allow[2] = '/\.co\.uk$/';
@@ -143,7 +145,7 @@ if(isset($_POST["email"]))
 
  if($match != 0)
  {
-  if (check_email($email) != True)
+  if (check_email($email) != True) /*This returns True if the email has been authorized */
   {
    print "<p>Automatic access to MDN is only available to researchers that have access to an email account hosted by an University or other research-related institution, and your email address was not recognized as such.</p>";
    print "<p>Contact us at aar2163@columbia.edu to request MDN access. Please state your name and affiliation.</p>";

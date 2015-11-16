@@ -7,6 +7,13 @@ import mdn
 
 
 
+"""
+ This script is only called by validate.php
+ Usage: init-data.py ticket software
+"""
+
+possible_software = ['gromacs', 'namd']
+
 
 data = mdn.get_data(sys.argv[1])
 
@@ -32,6 +39,10 @@ files['energy_conf']   = data['ticket'] + '-energy.conf'
 files['energy_mdp']   = data['ticket'] + '-energy.mdp'
 files['enematrix_dat'] = data['ticket'] + '-enematrix.dat'
 files['enerd_npy']     = data['ticket'] + '-enerd.npy'
+
+if not sys.argv[2] in possible_software:
+ print "Fatal error: invalid software name"
+ exit()
 
 if(sys.argv[2] == "gromacs"):
 

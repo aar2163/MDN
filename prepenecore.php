@@ -243,6 +243,8 @@ for($ii=0;$ii<count($list);$ii++)
 
 array_map('unlink', glob("$dir/$ticket-job.*"));
 
+/*Changing permissions as these files are created by user www-torque, but are later read by www-html*/
+
 chmod("$dir/$ticket-enerd.npy",0664);
 chmod("$dir/$ticket-adj.npy",0664);
 chmod("$dir/$ticket-netindex.ndx",0664);

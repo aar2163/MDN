@@ -52,30 +52,6 @@ Featured on SitePoint.com
 Developed by Craig Buckler (@craigbuckler) of OptimalWorks.net
 */
 
-function do_log($f,$out,$header)
-{
- $count = count($out);
- $nerr = $out[$count-1];
-
-  
- unlink($f);
- if($nerr == 0)
- {
-  system("echo 1 > $f");
- }
- else
- {
-  #system("echo $out > $f");
-  $handle = fopen($f, "w");
-  fwrite($handle,$header);
-  for($ii=0;$ii<$count-1;$ii++)
-  {
-   $text = $out[$ii];
-   fwrite($handle,"$text<br>\n");
-  }
-  fclose($handle);
- }
-}
 
 ob_start();
 
@@ -184,8 +160,10 @@ if(isset($_GET["ticket"]))
 
   if(isset($reset) and $reset == "yes")
   {
+   /* User cannot reset network if job is running */
    if(!$running)
    {
+    /*Clean network info in the database */
     $data['network']['running'] = false;
     $data['network']['done'] = false;
     $data['network']['success'] = false;

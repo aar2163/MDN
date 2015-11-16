@@ -78,8 +78,10 @@ else {
   if($valid)
   {
    
+   /* Move uploaded files to job directory specified in the base_dir database variable */
    move_uploaded_file($file['tmp_name'], $dir . $fn);
    $post_out = "<p>File $fn uploaded.</p>\n";
+
    $cmd = "/usr/bin/python update_file.py $ticket upload $type $fn; echo $?";
    unset($out);
    exec($cmd,$out,$err);

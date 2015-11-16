@@ -12,19 +12,23 @@ import mdn
  Usage: init-data.py ticket software
 """
 
+ticket = sys.argv[1]
+
+# Possible values of software
 possible_software = ['gromacs', 'namd']
+software = sys.argv[2]
 
 
-data = mdn.get_data(sys.argv[1])
+data = mdn.get_data(ticket)
 
 
-data['base_dir'] = '/var/www/html/uploads/' + sys.argv[1] + '/'
+data['base_dir'] = '/var/www/html/uploads/' + ticket + '/'
 
 data['validated'] = True
 
 data['software'] = {}
 
-data['software']['name'] = sys.argv[2]
+data['software']['name'] = software
 data['software']['gromacs_bindir'] = "/home/andre/gromacs463/bin/"
 
 data['files'] = {}
@@ -40,11 +44,11 @@ files['energy_mdp']   = data['ticket'] + '-energy.mdp'
 files['enematrix_dat'] = data['ticket'] + '-enematrix.dat'
 files['enerd_npy']     = data['ticket'] + '-enerd.npy'
 
-if not sys.argv[2] in possible_software:
+if not software in possible_software:
  print "Fatal error: invalid software name"
  exit()
 
-if(sys.argv[2] == "gromacs"):
+if(software == "gromacs"):
 
  data['software']['binpath'] = "/home/andre/gromacs463/bin"; 
  data['software']['top_dir'] = "/home/andre/gromacs463/share/gromacs/top/"
@@ -58,7 +62,7 @@ if(sys.argv[2] == "gromacs"):
  files['index'] = {'title': 'Index', 'mandatory': True, 'uploaded': False, 'extension': ['.ndx']}
 
 
-elif(sys.argv[2] == "namd"):
+elif(software == "namd"):
 
  data['software']['binpath'] = "/home/andre/NAMD_2.10_Source/Linux-x86_64-g++"; 
 
@@ -79,6 +83,6 @@ else:
  exit()
  
 
-mdn.update_data(sys.argv[1],data)
+mdn.update_data(ticket ,data)
 
 

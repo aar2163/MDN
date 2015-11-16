@@ -7,9 +7,18 @@ import mdn
 import read_top
 from sets import Set
 
-### usage python check_files.py data.json
+"""
+ This script is only called by files.php
 
-def check_molname(name,path,software):
+ Usage: python check_files.py ticket
+"""
+
+def check_molname(name, path, software):
+
+ """
+  Only relevant for gromacs jobs
+  Reads .top or .itp and checks if it is the molname we are looking for
+ """
 
  f = open(path,'r')
  readmolname = False
@@ -25,7 +34,14 @@ def check_molname(name,path,software):
    if(molname == name):
     bMatch = True
     break
-   
+  
+
+  """
+   Check if we are reading the moleculetype specification section
+   Format:
+    [ moleculetype ]
+     molname nrexcl
+  """
   if(re.match(mdn.reanytype[software],line)):
    readmolname = False
   if(re.match(mdn.remoleculetype,line)):
@@ -35,6 +51,10 @@ def check_molname(name,path,software):
  return bMatch
 
 def do_atoms(atoms,path,software):
+
+ """
+  Relevant for both gromacs and namd
+ """
 
  f = open(path,'r')
  readatoms = False
@@ -47,6 +67,7 @@ def do_atoms(atoms,path,software):
   lc = re.split(r';',line.strip())  # removing comments
   line = lc[0]
  
+  # Check whether it's an atom line
   if(readatoms and re.match(mdn.reatomline[software],line)):
    d = re.split(r'\s+',line)
    atoms['nr'].append(int(d[0]))
@@ -61,6 +82,13 @@ def do_atoms(atoms,path,software):
    
   
    
+  """
+   Check if we are reading the atom specification section
+   Format GROMACS:
+    [ atoms ]
+     atom1 ...
+     atom2 ...
+  """
   if(re.match(mdn.reanytype[software],line)):
    if(readatoms):
     break
@@ -163,7 +191,7 @@ def do_top_pdb(data):
  do_residues(mol['atoms'],mol['residues'])
 
 def do_top_psf(data):
- #Makes topology based on PDB file
+ #Makes topology based on PSF file
  #Entire system is considered one molecule
 
  f = data['files']['structure']['fname']
@@ -200,7 +228,9 @@ def do_top_gromacs(data):
   read_top.read_top(data,False,True)
   top = data['topology']
 
+ # get all topology files .top and .itp
  topfiles = data['files']['topology']['required_files']
+
  mol_number = data['topology']['mol_number']
  mol_name   = data['topology']['mol_name']
 
@@ -213,7 +243,9 @@ def do_top_gromacs(data):
    key = os.path.splitext(key)[0]
    f = files[key]['fname']
    path = data['base_dir'] + f
-   bMatch = check_molname(name,path,software)
+
+   # check if it's the molecule we want to process
+   bMatch = check_molname(name, path, software)
    if(bMatch):
     mol = top[name] = {}
     mol['fname'] = f
@@ -224,9 +256,14 @@ def do_top_gromacs(data):
 
     mol['residues'] = {}
     mol['residues']['resnr'] = []
+
+    # Read residues and bonds
+
     do_residues(mol['atoms'],mol['residues'])
 
     do_bonds(mol['atoms'],mol['residues'],path,software)
+
+    # done, so don't need to check other files
     break
 
 def do_top(data,output):
@@ -236,11 +273,6 @@ def do_top(data,output):
 
  if(data['software']['name'] == 'gromacs'):
   do_top_gromacs(data)
-
-
- #######
- #print topfiles
- #globatoms = do_global(top)
 
  nmol = 0
 
@@ -255,7 +287,9 @@ def do_top(data,output):
  for i,n in enumerate(data['topology']['mol_number']):
   output.append("{}: {}\n".format(data['topology']['mol_name'][i],n))
 
-def make_new_group(index,ngroups,group):
+
+
+def make_new_group(index, ngroups, group):
  index['groups']['nr'].append(ngroups)
  index['groups']['names'].append(group)
  index['groups'][str(ngroups)] = {}
@@ -272,13 +306,11 @@ def do_index(data,output):
  index['groups']['nr'] = []
  index['groups']['names'] = []
  
- #index['atoms'] = {}
- 
  ngroups = 0
- 
  
  readgroup = False
  
+ # get path of index file
  fname = data['files']['index']['fname']
 
  software = data['software']['name']
@@ -297,39 +329,57 @@ def do_index(data,output):
   line = lc[0]
  
  
-  if (re.match(mdn.reanytype['gromacs'],line)): #index file is always gromacs
+  if (re.match(mdn.reanytype['gromacs'], line)): #index file is always gromacs
    readgroup = True
    readnode = False
    read_node_group = False
 
+   # get group from '[ group ]'
    group = line.translate(string.maketrans("",""), '[]')
    group = group.strip()
 
-   if (re.match(mdn.renode,group)):
+   # Check if group is a node
+   if (re.match(mdn.renode, group)):
     index['specified_nodes'] = True
     readnode = True
     nnodes += 1
 
     if(inodes == -1): #first time reading node
      inodes = ngroups
-     make_new_group(index,ngroups,'SPECIFIED_NODES')
+     make_new_group(index, ngroups, 'SPECIFIED_NODES')
      ngroups += 1
    else:
-    make_new_group(index,ngroups,group)
+    make_new_group(index, ngroups, group)
     ngroups += 1
-    if re.match(mdn.renode_group,group):
+    if re.match(mdn.renode_group, group):
      read_node_group = True
 
-  elif (readgroup and re.match(mdn.reindexline,line)):
+  elif (readgroup and re.match(mdn.reindexline, line)):
+   # if we read the group name on the last line, now it's time to store the atoms
+
+   # group atom lines should be single-space separated integers
    d = re.split(r'\s*',line)
+
    for entry in d:
     entry = int(entry)
+
     if not readnode and not read_node_group:
+
+     # Standard group: append atom index to group
+
      index['groups'][str(ngroups-1)]['atoms'].append(entry)
+
     elif read_node_group:
+
+     # Node group, so indexes refer to nodes, not atoms
+     # and we need a loop over the corresponding atoms
+
      for atom in node_atoms[str(entry)]:
       index['groups'][str(ngroups-1)]['atoms'].append(atom)
     else:
+
+     # Node: append atom index to node specification
+
      index['groups'][str(inodes)]['atoms'].append(entry)
 
      if not str(nnodes) in node_atoms:
@@ -415,10 +465,13 @@ output = []
 
 if(estat == 0 and not PrevStatus):
  errors = []
+ # Process topology first
  try:
   do_top(data,output)
  except:
   errors.append('topology')
+
+ # Now do index file
  try:
   do_index(data,output)
   globatoms = mdn.do_globatoms(data['topology'])

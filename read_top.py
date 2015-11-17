@@ -8,6 +8,11 @@ import os.path
 import shutil
 import mdn
 
+"""
+ Imported by read_top_wrapper.py and check_files.py,
+ calling read_top function
+"""
+
 def add_required(top,fname):
  if('required_files' not in top):
   top['required_files'] = []

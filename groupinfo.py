@@ -4,8 +4,14 @@ import re
 import json
 import mdn
 
+"""
+ Called by setnetwork.php
+ Usage: python groupinfo.py ticket
+"""
 
-data = mdn.get_data(sys.argv[1])
+ticket = sys.argv[1]
+
+data = mdn.get_data(ticket)
 
 groups = data['index']['groups']
 names = groups['names']

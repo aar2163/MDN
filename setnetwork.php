@@ -82,9 +82,6 @@ if(isset($_GET["ticket"]))
   echo '<p><h1>Network Setup</h1></p>';
   echo "<p><h2>You must select a group to construct the network:</h2></p>\n\n";
   echo '<h2>Why? <a href="documentation/network-construction.html">Click here</a></h2></p>';
-  #$cmd = "python groupinfo.py $dir/index.ndx; echo $?";
-  #exec($cmd,$out,$err);
-  #$count = count($out);
 
   $cmd = "python groupinfo.py $ticket; echo $?";
   unset($out);

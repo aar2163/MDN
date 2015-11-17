@@ -225,6 +225,7 @@ def do_top_gromacs(data):
  try: 
   top = data['topology']
  except:
+  # This should not be necessary, but here just in case
   read_top.read_top(data,False,True)
   top = data['topology']
 

@@ -55,6 +55,10 @@ def do_nodes(data,fname):
   netindex_dat = data['base_dir'] + data['files']['netindex_dat']
   f2 = open(netindex_dat, 'w')
 
+ """ 
+  st will have the gromacs mdp line specifying
+  node energy groups
+ """ 
  st = "energygrps ="
 
  for line in f:
@@ -62,24 +66,42 @@ def do_nodes(data,fname):
   line = lc[0]
  
  
-  #if (re.match(r'^\s*\[\s*\S+\s*\]\s*$',line)):
   if (re.match(mdn.reanytype['gromacs'], line)):
    readnode = False
  
   if (re.match(mdn.renode_strict, line)):
+   """
+    Check if this line has a node name
+    renode_strict is necessary here, not sure why
+   """
    readnode = True
    nnodes += 1
+
+   """
+    Get node name
+   """
    node = line.translate(string.maketrans("",""), '[]')
    node = node.strip()
+
+
+   """ 
+    Check if node name is invalid 
+   """  
    if(node == 'names' or node == 'nr'):
     print("Fatal error: You cannot have a group named {}\n".format(node))
     exit(1)
-   
+
+   """  
+    Update mdp string and add this node to list
+   """  
    st = st + ' ' + node
    last_node = node
    nodes_names.append(node)
  
   elif(readnode and re.match(r'^\s*\d+',line)):
+   """
+    Reading node atoms
+   """
    d = re.split(r'\s*',line)
    for entry in d:
     entry = int(entry)
@@ -126,16 +148,31 @@ def do_groups(data):
  nr = groups['nr']
  netatoms = mdn.dic2list(data['network']['atoms']['nr'])
 
- for ii,n in enumerate(names):
+ for ii, n in enumerate(names):
+  """  
+   Get node index
+  """  
   idx = nr[ii]
   group = groups[str(idx)]
   atoms = mdn.dic2list(group['atoms'])
+
   bInclude = True
+
+  """ 
+   Check if all atoms of this group are part
+   of the network
+  """ 
   for a in atoms:
    if (a not in netatoms):
     bInclude = False
-  print idx,n,bInclude
+
+  """ 
+   Print results for debugging purposes
+  """ 
+  print idx, n, bInclude
   group['bNetwork'] = bInclude
+
+
 
 def do_mdp(mdp1, mdp2, st):
  f = open(mdp1,'r')
@@ -147,6 +184,13 @@ def do_mdp(mdp1, mdp2, st):
   l = lc[0]
  
  
+  """
+   Copying lines from mdp1 to mdp2
+   We skip any energygrps
+   We also set coulombtype to cutoff
+   and cutoff-sheme to group 
+  """
+
   if not (re.match(r'^\s*energygrps',l)):
    if re.search(r'coulombtype\s*=\s*pme',l.lower()):
     line = "coulombtype = cutoff\n"

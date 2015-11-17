@@ -22,7 +22,7 @@ if (typ in names):
  """
   valid type, so print possible file extensions
  """
- for e in files[name]['extension']:
+ for e in files[typ]['extension']:
   print e
  exit()
 

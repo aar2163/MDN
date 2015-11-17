@@ -62,10 +62,10 @@ def do_nodes(data,fname):
   line = lc[0]
  
  
-  if (re.match(r'^\s*\[\s*\S+\s*\]\s*$',line)):
+  #if (re.match(r'^\s*\[\s*\S+\s*\]\s*$',line)):
+  if (re.match(mdn.reanytype['gromacs'], line)):
    readnode = False
  
-  #if (re.match(r'^\s*\[\s*Node_\d+\s*\]\s*$',line)):
   if (re.match(mdn.renode_strict, line)):
    readnode = True
    nnodes += 1

@@ -3,39 +3,44 @@ from sets import Set
 from pymongo import MongoClient
 import re
 
-reatomline = {}
-reatomline['gromacs'] =     r'^\s*\d+\s+\w+\S*\s+\d+\s+'
-reatomline['namd']    =     r'^\s*\d+\s+\w+\S*\s+\d+\s+'
+"""
+ Global RE patterns
+"""
 
-reindexline =    r'^\s*\d+'
+reatomline            =   {}
+reatomline['gromacs'] =   r'^\s*\d+\s+\w+\S*\s+\d+\s+'
+reatomline['namd']    =   r'^\s*\d+\s+\w+\S*\s+\d+\s+'
+
+reindexline           =   r'^\s*\d+'
 
 rebondline = {}
 rebondline['gromacs'] =   r'^\s*\d+\s+\d+\s+\d+'
 rebondline['namd']    =   r'^\s*\d+\s+\d+\s+\d+'
 
 
-renameval =      r'^\s*\w+\S*\s+\d+\s*$'
+renameval             =   r'^\s*\w+\S*\s+\d+\s*$'
 
 reanytype = {}
-reanytype['gromacs'] =   r'^\s*\[\s*\S+\s*\]\s*$'
-reanytype['namd']    =   r'^\s*\d+\s+!'
+reanytype['gromacs']  =   r'^\s*\[\s*\S+\s*\]\s*$'
+reanytype['namd']     =   r'^\s*\d+\s+!'
 
 
-remoleculetype = r'^\s*\[\s*moleculetype\s*\]\s*$'
-reinclude =      r'^\#include'
-remolecules =    r'^\s*\[\s*molecules\s*\]\s*$'
+remoleculetype        =   r'^\s*\[\s*moleculetype\s*\]\s*$'
+reinclude             =   r'^\#include'
+remolecules           =   r'^\s*\[\s*molecules\s*\]\s*$'
 
-reatoms = {}
-reatoms['gromacs'] =     r'^\s*\[\s*atoms\s*\]\s*$'
-reatoms['namd']    =     r'^\s*\d+\s+!NATOM'
+reatoms               =   {}
+reatoms['gromacs']    =   r'^\s*\[\s*atoms\s*\]\s*$'
+reatoms['namd']       =   r'^\s*\d+\s+!NATOM'
 
-rebonds = {}
-rebonds['gromacs'] =     r'^\s*\[\s*bonds\s*\]\s*$'
-rebonds['namd']    =     r'^\s*\d+\s+!NBOND'
+rebonds               =   {}
+rebonds['gromacs']    =   r'^\s*\[\s*bonds\s*\]\s*$'
+rebonds['namd']       =   r'^\s*\d+\s+!NBOND'
 
-renode  =        r'^\s*Node\_'
-renode_group  =        r'^\s*NodeGroup\_'
-repdb_atom =     r'^ATOM|^HETATM'
+renode_strict         =   r'^\s*\[\s*Node_\d+\s*\]\s*$'
+renode                =   r'^\s*Node\_'
+renode_group          =   r'^\s*NodeGroup\_'
+repdb_atom            =   r'^ATOM|^HETATM'
 
 max_nnodes = 2000
 

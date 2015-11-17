@@ -5,8 +5,17 @@ import numpy as np
 import json
 import mdn
 
+"""
+ Called by prepenecore.php
+ Usage: python nodes.py ticket
+"""
+
 def clear_mols(data):
- ## This should not be necessary
+ """
+  This should not be necessary, but it's here 
+  just in case. Remove all node information from 
+  topology entry
+ """
  for name in data['topology']['mol_name']:
   try:
    data['topology'][name].pop('netnodes',None)
@@ -17,7 +26,16 @@ def clear_mols(data):
 
 def do_nodes(data,fname):
 
+ """
+  Writes netindex file, with nodes specified as groups 
+  for energy analysis
+ """
+
  net = data['network']
+
+ """
+  Initialize some variables
+ """
  nodes = {}
  atoms_nr = []
  atoms_map = {}
@@ -47,7 +65,8 @@ def do_nodes(data,fname):
   if (re.match(r'^\s*\[\s*\S+\s*\]\s*$',line)):
    readnode = False
  
-  if (re.match(r'^\s*\[\s*Node_\d+\s*\]\s*$',line)):
+  #if (re.match(r'^\s*\[\s*Node_\d+\s*\]\s*$',line)):
+  if (re.match(mdn.renode_strict, line)):
    readnode = True
    nnodes += 1
    node = line.translate(string.maketrans("",""), '[]')
@@ -118,7 +137,7 @@ def do_groups(data):
   print idx,n,bInclude
   group['bNetwork'] = bInclude
 
-def do_mdp(mdp1,mdp2):
+def do_mdp(mdp1, mdp2, st):
  f = open(mdp1,'r')
  
  fout = open(mdp2,'w')
@@ -129,9 +148,6 @@ def do_mdp(mdp1,mdp2):
  
  
   if not (re.match(r'^\s*energygrps',l)):
-   #node = line.translate(string.maketrans("",""), '[]')
-   #node = node.strip()
-   #st = st + ' ' + node
    if re.search(r'coulombtype\s*=\s*pme',l.lower()):
     line = "coulombtype = cutoff\n"
    if re.search(r'cutoff-scheme\s*=\s*verlet',l.lower()):
@@ -145,30 +161,36 @@ def do_mdp(mdp1,mdp2):
  
  fout.close()
 
-## Main code
 
 
-data = mdn.get_data(sys.argv[1])
+def main():
 
-netindex_ndx = data['base_dir'] + data['files']['netindex_ndx']
+ data = mdn.get_data(sys.argv[1])
 
-
-clear_mols(data)
-
-st = do_nodes(data,netindex_ndx)
-
-do_groups(data)
+ netindex_ndx = data['base_dir'] + data['files']['netindex_ndx']
 
 
+ clear_mols(data)
+
+ st = do_nodes(data, netindex_ndx)
+
+ do_groups(data)
 
 
-mdn.update_data(sys.argv[1],data)
+
+
+ mdn.update_data(sys.argv[1],data)
   
 
-if(data['software']['name'] == 'gromacs'):
- mdp1 = data['base_dir'] + data['files']['mdp']['fname']
- mdp2 = data['base_dir'] + data['files']['energy_mdp']
- do_mdp(mdp1,mdp2)
+ if(data['software']['name'] == 'gromacs'):
+  mdp1 = data['base_dir'] + data['files']['mdp']['fname']
+  mdp2 = data['base_dir'] + data['files']['energy_mdp']
+  do_mdp(mdp1,mdp2, st)
+
+
+
+if __name__ == '__main__':
+ main()
 
 
 

@@ -219,10 +219,6 @@ else {
 
    if($valid)
    {
-    /*$cmd = "python get_fname.py $ticket $type; echo $?";
-    unset($out);
-    exec($cmd,$out,$err);
-    $v = $out[0];*/
     $v = $data['files'][$type]['fname'];
 
     $cmd = "/usr/bin/python update_file.py $ticket delete $type $v 2> $dir/saida; echo $?";

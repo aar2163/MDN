@@ -46,12 +46,6 @@ $(document).ready(function(){
 
 
 <?php
-/*
-Server-side PHP file upload code for HTML5 File Drag & Drop demonstration
-Featured on SitePoint.com
-Developed by Craig Buckler (@craigbuckler) of OptimalWorks.net
-*/
-
 
 ob_start();
 
@@ -91,7 +85,6 @@ if(isset($_GET["ticket"]))
   for($ii=0;$ii<$count-1;$ii++)
   {
    $v[$ii] = split(' ',$out[$ii]);
-   #echo $out[$ii]."\n";
   }
 
   echo '<form action="setnetwork.php" method="get">';
@@ -132,14 +125,8 @@ if(isset($_GET["ticket"]))
                    {
                     if($v[$ii][2] == "True")
                     {
-         		#echo '<li><span class="tip"><input type="checkbox" class="lCheckBox" name="netindex" value="'.$ii.'"></span></li>'."\n";
          		echo '<li><span class="tip"><input type="checkbox" class="radio" name="netindex" value="'.$ii.'"></span></li>'."\n";
                     }
-                    else
-                    {
-			#echo '<li><span class="tip"><img height="15px" src="images/error.png"></span></li>';
-                    }
-         		#echo '<li><span class="tip"><span>'. $out[$ii] .'</span></li>';
                    }
 
   echo '      </ul>

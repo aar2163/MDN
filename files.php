@@ -88,7 +88,7 @@ else {
   
    if($type == "topology")
    { 
-    $cmd = "/usr/bin/python readtop.py $ticket 2> $dir/saida; echo $?";
+    $cmd = "/usr/bin/python read_top_wrapper.py $ticket 2> $dir/saida; echo $?";
     unset($out);
     exec($cmd,$out,$err);
    }

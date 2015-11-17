@@ -9,11 +9,17 @@ import shutil
 import read_top
 import mdn
 
+"""
+ Only called by files.php
+ Usage: python readtop.py ticket
+"""
 
 
 ## Main code
 
-data = mdn.get_data(sys.argv[1])
+ticket = sys.argv[1]
+
+data = mdn.get_data(ticket)
 
 read_top.read_top(data,True,True)
 

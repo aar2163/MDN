@@ -18,7 +18,7 @@ names = files['names']
 
 fnames = []
 
-for n in range(len(names)):
+for n in names:
  f = files[n]
  upl = f['uploaded']
 

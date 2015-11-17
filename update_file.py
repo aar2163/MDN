@@ -13,11 +13,16 @@ import mdn
  typ: data['files']['names']
 """
 
-def pop_entry(entry,data):
+def pop_entry(entry, data):
  if(entry in data):
   data.pop(entry,None)
 
 def remove_required(files, typ):
+ """
+  Some file types have required auxiliary files
+  If one of these has been removed, we delete the 
+  requirements as well
+ """
  for i in files[typ]['required_files']:
   print i,names
   names.remove(i)
@@ -31,14 +36,13 @@ def remove_required(files, typ):
  files[typ].pop('required_files',None)
 
 
-data = mdn.get_data(sys.argv[1])
 
-ticket = data['ticket']
+ticket = sys.argv[1]
+op     = sys.argv[2] 
+typ    = sys.argv[3]
 
+data = mdn.get_data(ticket)
 
-op = sys.argv[2] #upload or download
-
-typ = sys.argv[3]
 
 """
  Auxiliary files, like ligand.itp, will contain the file extension.
@@ -77,7 +81,7 @@ if(op == 'delete'):
 
 
 
-mdn.update_data(sys.argv[1],data)
+mdn.update_data(ticket, data)
 
 
 

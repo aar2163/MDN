@@ -4,20 +4,32 @@ import re
 import json
 import mdn
 
+"""
+ Called by files.php
+ Usage: python valid_type.py ticket typ
+"""
 
+ticket = sys.argv[1]
+typ    = sys.argv[2]
 
-data = mdn.get_data(sys.argv[1])
+data = mdn.get_data(ticket)
 
-name = sys.argv[2]
 
 files = data['files']
 names = files['names']
 
-if (name in names):
+if (typ in names):
+ """
+  valid type, so print possible file extensions
+ """
  for e in files[name]['extension']:
   print e
  exit()
+
 else:
+ """
+  exit with error
+ """
  print 1
  exit(1)
 

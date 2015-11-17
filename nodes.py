@@ -27,7 +27,7 @@ def clear_mols(data):
 def do_nodes(data,fname):
 
  """
-  Writes netindex file, with nodes specified as groups 
+  Reads netindex file, with nodes specified as groups 
   for energy analysis
  """
 

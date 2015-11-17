@@ -2,6 +2,11 @@ import sys
 import mdn
 import re
 
+"""
+ Called by prepenecore.php
+ Usage: python make_conf.py ticket
+"""
+
 excl_list = [r'^bincoordinates', r'coordinates', r'structure', \
              r'binvelocities', r'temperature', r'extendedsystem', \
              r'parameters', r'fixedatoms', r'margin', \
@@ -15,7 +20,9 @@ incl_list = [r'PME', r'exclude', r'paratypecharmm', \
              r'switching', r'switchdist', r'pairlistdist', \
              r'cutoff', r'cell']
 
-data = mdn.get_data(sys.argv[1])
+ticket = sys.argv[1]
+
+data = mdn.get_data(ticket)
 
 data['files']['energy_conf'] = data['base_dir'] + data['ticket'] \
                              + '-energy.conf'

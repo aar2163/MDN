@@ -3,49 +3,64 @@ import sys
 import string
 import re
 
+"""
+ Calculates internode distances and writes output DAT files
+
+ Called by analysis.php
+ Usage: python centrality.py adj wpath ref_enerd enerd adj_dat wpath_dat dist_dat");
+ Input files: adj wpath enerd enerd2
+ Output files: adj_dat wpath_dat dist_dat
+"""
+
 bEner = True
 bCorr = False
 
 
-adj = np.load(sys.argv[1])
+adj       =  np.load(sys.argv[1])
+wpath     =  np.load(sys.argv[2])
+ref_ener  = -np.load(sys.argv[3])
+ener      = -np.load(sys.argv[4])
 
-wpath = np.load(sys.argv[2])
-
-ener = -np.load(sys.argv[3])
-ener2 = -np.load(sys.argv[4])
-#ener3 = -np.load(sys.argv[4])
+adj_dat   = sys.argv[5]
+wpath_dat = sys.argv[6]
+dist_dat  = sys.argv[7]
 
 
 ind1 = (adj == 0)
-ind2 = (ener > 1)
-ind3 = (ener2 != 0)
-#ind4 = (ener3 != 0)
+ind2 = (ref_ener > 1)
+ind3 = (ener != 0)
 
-intersect = ind1*ind2
-intersect2 = ind1*ind3
-#intersect3 = ind1*ind4
+"""
+ Find out which nodes are not covalently bound
+ and have negative interaction energies in the reference matrix
+"""
+ref_intersect = ind1*ind2
+
+"""
+ Find out which nodes are not covalently bound
+ and have non-zero interaction energies in the system energy matrix 
+"""
+intersect = ind1*ind3
 
 
-d1 = ener2[intersect2]
-d2 = ener[intersect]
+d1 = ener[intersect]
+d2 = ref_ener[ref_intersect]
 
 mean = np.mean(d2)
-prms = np.std(d2,ddof=1)
+prms = np.std(d2, ddof=1)
 
-mean = 10.0
-prms = 15.0
+#mean = 10.0
+#prms = 15.0
 
+ener[intersect] -= mean
+ener[intersect] /= 5.0 * prms
+ener[intersect] += 1.0
+ener[intersect] *= 0.5
 
-ener2[intersect2] -= mean
-ener2[intersect2] /= 5*prms
-ener2[intersect2] += 1.0
-ener2[intersect2] *= 0.5
-
-ind = ener2 < 0.01
-ener2[ind] = 0.0
-ind = ener2 > 0.99
-ener2[ind] = 0.99
-#print ener
+ind = ener < 0.01
+ener[ind] = 0.0
+ind = ener > 0.99
+ener[ind] = 0.99
 
 
 
@@ -53,44 +68,45 @@ ener2[ind] = 0.99
 
 
 
-
-#log = sys.argv[5]
 
 bEner = True
 bCorr = False
 
 
 
-nnodes = len(ener)
+nnodes = len(ref_ener)
 
 weight = np.zeros((nnodes,nnodes))
-#weight2 = np.zeros((nnodes,nnodes))
 
 if(bEner):
  weight[:] = 0.99
- #weight2[:] = 0.99
- weight[ind1] = ener2[ind1]
+ weight[ind1] = ener[ind1]
 else:
  weight[ind1] = 0
 
 dist = weight.copy()
-ind1 = (dist != 0)
-dist[ind1] = -np.log(abs(weight[ind1]))
+
+ind_d = (dist != 0)
+dist[ind_d] = -np.log(abs(weight[ind_d]))
 
 
-fout = open(sys.argv[5],'w')
+"""
+ Write output DAT files
+"""
+
+fout = open(adj_dat, 'w')
 for i in adj.flatten():
  line = "{}\n".format(i)
  fout.write(line)
 fout.close()
 
-fout = open(sys.argv[6],'w')
+fout = open(wpath_dat, 'w')
 for i in wpath.flatten():
  line = "{}\n".format(i)
  fout.write(line)
 fout.close()
 
-fout = open(sys.argv[7],'w')
+fout = open(dist_dat, 'w')
 for i in dist.flatten():
  line = "{}\n".format(i)
  fout.write(line)

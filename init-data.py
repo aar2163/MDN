@@ -43,6 +43,7 @@ files['energy_conf']   = data['ticket'] + '-energy.conf'
 files['energy_mdp']   = data['ticket'] + '-energy.mdp'
 files['enematrix_dat'] = data['ticket'] + '-enematrix.dat'
 files['enerd_npy']     = data['ticket'] + '-enerd.npy'
+files['adj_npy']       = data['ticket'] + '-adj.npy'
 
 if not software in possible_software:
  print "Fatal error: invalid software name"

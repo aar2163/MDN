@@ -16,6 +16,7 @@ base_dir = data['base_dir']
 
 enerd = np.load(base_dir + data['files']['enerd_npy'])
 
+
 try:
  adj = np.load(base_dir + data['files']['adj_npy'])
 except:
@@ -24,8 +25,13 @@ except:
  """ 
  adj = np.load(base_dir + ticket + '-adj.npy')
 
+
+
 ind1 = (enerd != 0)
 ind2 = (adj == 0)
+
+nnodes = len(enerd)
+nbonds = len(adj)*len(adj) - len(adj[ind2])
 
 intersect = ind1*ind2
 
@@ -34,9 +40,12 @@ non_zero = enerd[intersect]
 mean = np.mean(non_zero)
 std = np.std(non_zero)
 
+
 hist, edges = np.histogram(non_zero, bins=20, range=(-100,100))
 
 output = {}
+output['nnodes'] = nnodes
+output['nbonds'] = nbonds
 output['hist']  = hist.tolist()
 output['edges'] = edges.tolist()
 output['mean'] = "{0:.3f}".format(mean)

@@ -55,7 +55,7 @@ function recp(id) {
 
   $link[0] = "files.php?ticket=$ticket";
   $link[1] = "setnetwork.php?ticket=$ticket";
-  $link[2] = "histogram.php?ticket=$ticket";
+  $link[2] = "overview.php?ticket=$ticket";
   $link[3] = "analysis.php?ticket=$ticket";
 
   $condition[0] = $data['network']['available'];

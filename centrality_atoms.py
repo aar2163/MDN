@@ -5,9 +5,13 @@ import numpy as np
 import json
 import mdn
 
-## Main code
+"""
+ Prepares csv file with centrality values for each atom
+ Creates output_files variable in database entry
 
-##usage: centrality_atoms.py ticket centrality.csv centrality_atoms.csv enerd.npy
+ Called by analysis.php
+ Usage: centrality_atoms.py ticket centrality.csv centrality_atoms.csv enerd.npy
+"""
 
 
 data = mdn.get_data(sys.argv[1])
@@ -21,8 +25,6 @@ mdn.update_data(sys.argv[1],data)
 ticket = data['ticket']
 
 f = open(sys.argv[2],'r')
-
-#globatoms = data['topology']['global']['atoms']
 
 out = open(sys.argv[3],'w')
 
@@ -45,9 +47,6 @@ for line in f:
 out.close()
 f.close()
 
-
-#for i in nodes['names']:
-# print nodes[i].keys()
 
 
 

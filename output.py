@@ -4,19 +4,31 @@ import re
 import mdn
 import zipfile
 
+"""
+ Called by analysis.php
+ Usage: python output.py ticket zip_fn
+"""
 
-data = mdn.get_data(sys.argv[1])
+ticket = sys.argv[1]
+zip_fn = sys.argv[2]
 
-ticket = data['ticket']
+data = mdn.get_data(ticket)
 
-zf = zipfile.ZipFile(sys.argv[2],"w",zipfile.ZIP_DEFLATED)
+zf = zipfile.ZipFile(zip_fn,"w",zipfile.ZIP_DEFLATED)
 
+"""
+ Loop over all output files specified in the database
+ and add to zipfile
+"""
 for i in data['output_files']:
  base = os.path.basename(i)
+
  if(re.match(ticket,base)):
   st = re.split(ticket + '-',base)[1]
+
  else:
   st = base
+
  zf.write(i,st)
 
 zf.close()

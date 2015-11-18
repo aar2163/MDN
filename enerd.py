@@ -27,7 +27,7 @@ data = mdn.get_data(sys.argv[1])
 """
 
 enematrix = data['base_dir'] + data['files']['enematrix_dat']
-netndex  = data['base_dir'] + data['files']['netindex_ndx']
+netindex  = data['base_dir'] + data['files']['netindex_ndx']
 enenpy    = data['base_dir'] + data['files']['enerd_npy']
 
 

@@ -3,6 +3,7 @@ import mdn
 import re
 
 """
+ Creates NAMD configuration file for energy calculation
  Called by prepenecore.php
  Usage: python make_conf.py ticket
 """

@@ -1,4 +1,5 @@
 import json
+import string
 from sets import Set
 from pymongo import MongoClient
 import re
@@ -40,6 +41,7 @@ rebonds['namd']       =   r'^\s*\d+\s+!NBOND'
 renode_strict         =   r'^\s*\[\s*Node_\d+\s*\]\s*$'
 renode                =   r'^\s*Node\_'
 renode_group          =   r'^\s*NodeGroup\_'
+redouble_node         =   r'\S*:Node_\d+-Node_\d+'
 repdb_atom            =   r'^ATOM|^HETATM'
 
 max_nnodes = 2000
@@ -144,7 +146,11 @@ def do_globatoms(top):
 
  return globatoms
 
-  
+ 
+def get_node_name(line): 
+ name = line.translate(string.maketrans("",""), '[]')
+ name = name.strip()
+ return name
    
 
 

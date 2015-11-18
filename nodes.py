@@ -80,8 +80,7 @@ def do_nodes(data,fname):
    """
     Get node name
    """
-   node = line.translate(string.maketrans("",""), '[]')
-   node = node.strip()
+   node = mdn.get_node_name(line)
 
 
    """ 
@@ -119,6 +118,13 @@ def do_nodes(data,fname):
      nodes[last_node] = {}
      nodes[last_node]['atoms'] = []
      nodes[last_node]['atoms'].append(entry)
+
+     """
+      We want the global residue information,
+      so we store the globatom info of the first atom
+      globatoms format : 
+      [atom_number,residue_number,molecule_name,molecule,number]
+     """
      l = globatoms[str(entry)][:]
      nodes[last_node]['globres'] = l
  

@@ -1,23 +1,50 @@
+<?php
+ include 'mdn.php'
+?>
+
 <html>
  <head>
-    <title>Energy Histogram</title>
+    <title>Network Overview</title>
     <link href="c3.css" rel="stylesheet" type="text/css">
 <script src="d3.min.js" charset="utf-8"></script>
 <script src="c3.min.js"></script>
   </head>
  <body>
 <?php
- $ticket = $_GET["ticket"];
- $json_string = `python prep_histogram.py $ticket`;
- $data = json_decode($json_string);
+ if(isset($_GET["ticket"]))
+ {
+  $ticket = $_GET["ticket"];
 
- $hist  = $data->{'hist'};
- $edges = $data->{'edges'};
+  $data = get_data($ticket);
 
+  if(!isset($data['ticket']))
+  {
+   echo "<p>Invalid ticket</p>";
+  }
+  else
+  {
+   do_header($ticket);
+   $json_string = `python prep_histogram.py $ticket`;
+   $data = json_decode($json_string);
+
+   $hist  = $data->{'hist'};
+   $edges = $data->{'edges'};
+
+   $mean = $data->{'mean'};
+   $std  = $data->{'std'};
 ?>
-<div id="chart"></div>
+<center>
+<h2>Interaction Energy Distribution (non-bonded interactions)</h2>
+<div id="chart"></div></center>
+<h2>Statistics (kcal/mol)</h2>
+<h3>Mean: <?php print $mean; ?></h3>
+<h3>Std. Dev.: <?php print $std; ?></h3>
+<h3>These values were used for network edge calculation, according to</h3>
+<div><img src="formula1.png" width=400></div>
+<div><img src="formula2.png" width=400></div>
+<h3>See Ribeiro and Ortiz, J. Chem. Theo. Comput. 10, 1762-1769 (2014)</h3>
   <script>
-var hist  = ['data'];
+var hist  = ['count'];
 var edges = ['edges'];
 
 <?php
@@ -37,6 +64,8 @@ var edges = ['edges'];
 
 
 var chart = c3.generate({
+    legend: { show: false },
+    size: {width: 500},
     data: {
         x: 'edges',
         columns: [
@@ -50,10 +79,26 @@ var chart = c3.generate({
         }
         // or
         //width: 100 // this makes bar width 100px
+    },
+    axis: {
+     x: {
+      label: { 
+       text: 'Energy (kcal/mol)',
+       position: 'outer-center'
+      }
+     },
+     y: {
+      label: { 
+       text: 'Count',
+       position: 'outer-middle'
+      }
+     }
     }
 });
-
-
+<?php
+  }
+ }
+?>
  </script>
  </body>
 </html>

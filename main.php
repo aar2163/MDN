@@ -50,15 +50,18 @@ function recp(id) {
 
   $step_d[0] = "Upload Files";
   $step_d[1] = "Create Network";
-  $step_d[2] = "Network Analysis";
+  $step_d[2] = "Network Overview";
+  $step_d[3] = "Network Analysis";
 
   $link[0] = "files.php?ticket=$ticket";
   $link[1] = "setnetwork.php?ticket=$ticket";
-  $link[2] = "analysis.php?ticket=$ticket";
+  $link[2] = "histogram.php?ticket=$ticket";
+  $link[3] = "analysis.php?ticket=$ticket";
 
   $condition[0] = $data['network']['available'];
   $condition[1] = $data['network']['success'];
   $condition[2] = $data['network']['success'];
+  $condition[3] = $data['network']['success'];
 
   $count = count($step_d);
 

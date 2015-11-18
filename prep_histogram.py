@@ -31,11 +31,16 @@ intersect = ind1*ind2
 
 non_zero = enerd[intersect]
 
+mean = np.mean(non_zero)
+std = np.std(non_zero)
+
 hist, edges = np.histogram(non_zero, bins=20, range=(-100,100))
 
 output = {}
 output['hist']  = hist.tolist()
 output['edges'] = edges.tolist()
+output['mean'] = "{0:.3f}".format(mean)
+output['std'] = "{0:.3f}".format(std)
 
 print json.dumps(output)
 

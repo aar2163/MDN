@@ -61,7 +61,7 @@ function recp(id) {
   $condition[0] = $data['network']['available'];
   $condition[1] = $data['network']['success'];
   $condition[2] = $data['network']['success'];
-  $condition[3] = $data['network']['success'];
+  $condition[3] = isset($data['output_files']);
 
   $count = count($step_d);
 

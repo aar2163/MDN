@@ -25,16 +25,16 @@
   {
    do_header($ticket);
    $json_string = `python prep_histogram.py $ticket`;
-   $data = json_decode($json_string);
+   $hist = json_decode($json_string);
 
-   $hist  = $data->{'hist'};
-   $edges = $data->{'edges'};
+   $counts = $hist->{'counts'};
+   $edges  = $hist->{'edges'};
 
-   $mean = $data->{'mean'};
-   $std  = $data->{'std'};
+   $mean = $hist->{'mean'};
+   $std  = $hist->{'std'};
 
-   $nnodes = $data->{'nnodes'};
-   $nbonds = $data->{'nbonds'};
+   $nnodes = $hist->{'nnodes'};
+   $nbonds = $hist->{'nbonds'};
 ?>
 <center>
 <h2>Network Overview</h2>
@@ -45,19 +45,74 @@
 <h2>Statistics (kcal/mol)</h2>
 <p>Mean: <?php print $mean; ?><p>
 <p>Std. Dev.: <?php print $std; ?></p>
-<p><u>These values will be used for determining network edge weights</u>, according to</p>
+<p><u>These values are used as parameters for determining network edge weights</u>, according to</p>
 <div><img src="formula1.png" width=400></div>
 <div><img src="formula2.png" width=400></div>
 <p>see <b>Ribeiro and Ortiz, J. Chem. Theo. Comput. 10, 1762-1769 (2014)</b></p>
-  <script>
-var hist  = ['count'];
-var edges = ['edges'];
+
 
 <?php
- foreach ($hist as $item)
+  if (isset($_GET["setparams"]))
+  {
+   if (isset($_GET["mean"]) and isset($_GET["std"]))
+   {
+    $mean = floatval($_GET["mean"]);
+    $std  = floatval($_GET["std"]);
+    if ($std > 0)
+    {
+     $data = get_data($ticket);
+     $data["network"]["params"]["mean"] = $mean;
+     $data["network"]["params"]["std"]  = $std;
+     unset($data['output_files']);
+     update_data($ticket, $data);
+?>
+     <h3>Updating network.</h3>
+<?php
+    }
+    else
+    {
+?>
+     <h3>Invalid values. <a href="?ticket=<?php print $ticket;?>&setparams">Try again</a></h3>
+<?php
+    }
+   }
+   else
+   {
+?>
+    <form action="" method="get">
+    <input type="hidden" name="ticket" value ="<?php print $ticket;?>">
+    <input type="hidden" name="setparams">
+    <p>Mean: <input type="text" name="mean"></p>
+    <p>Std. Dev.: <input type="text" name="std"></p>
+    <p><input type="submit"></p>
+
+<?php
+   }
+  }
+  else
+  {
+?>
+   <h3><a href="?ticket=<?php print $ticket;?>&setparams">Click here to specify different parameter values</a></h3>
+<?php
+  }
+  if(isset($data["network"]["params"]))
+  {
+   $mean = $data["network"]["params"]["mean"];
+   $std  = $data["network"]["params"]["std"];
+?>
+   <h3>You chose to use the values <?php print $mean;?> (mean) and <?php print $std;?> (std dev).</h3>
+<?php
+  }
+?>
+  <script>
+var counts = ['count'];
+var edges  = ['bins'];
+
+<?php
+ foreach ($counts as $item)
  {
   ?>
-  hist.push(<?php print $item;?>);
+  counts.push(<?php print $item;?>);
   <?php 
  }
  foreach ($edges as $item)
@@ -73,9 +128,9 @@ var chart = c3.generate({
     legend: { show: false },
     size: {width: 500},
     data: {
-        x: 'edges',
+        x: 'bins',
         columns: [
-            hist, edges
+            counts, edges
         ],
         type: 'bar'
     },

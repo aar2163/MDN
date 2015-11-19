@@ -2,6 +2,7 @@ import numpy as np
 import sys
 import string
 import re
+import mdn
 
 """
  Calculates internode distances and writes output DAT files
@@ -15,15 +16,16 @@ import re
 bEner = True
 bCorr = False
 
+data = mdn.get_data(sys.argv[1])
 
-adj       =  np.load(sys.argv[1])
-wpath     =  np.load(sys.argv[2])
-ref_ener  = -np.load(sys.argv[3])
-ener      = -np.load(sys.argv[4])
+adj       =  np.load(sys.argv[2])
+wpath     =  np.load(sys.argv[3])
+ref_ener  = -np.load(sys.argv[4])
+ener      = -np.load(sys.argv[5])
 
-adj_dat   = sys.argv[5]
-wpath_dat = sys.argv[6]
-dist_dat  = sys.argv[7]
+adj_dat   = sys.argv[6]
+wpath_dat = sys.argv[7]
+dist_dat  = sys.argv[8]
 
 
 ind1 = (adj == 0)
@@ -46,8 +48,12 @@ intersect = ind1*ind3
 d1 = ener[intersect]
 d2 = ref_ener[ref_intersect]
 
-mean = np.mean(d2)
-prms = np.std(d2, ddof=1)
+try:
+ mean = data['network']['params']['mean']
+ prms = data['network']['params']['std']
+except:
+ mean = np.mean(d2)
+ prms = np.std(d2, ddof=1)
 
 #mean = 10.0
 #prms = 15.0

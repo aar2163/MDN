@@ -41,15 +41,15 @@ mean = np.mean(non_zero)
 std = np.std(non_zero)
 
 
-hist, edges = np.histogram(non_zero, bins=20, range=(-100,100))
+counts, edges = np.histogram(non_zero, bins=20, range=(-100,100))
 
 output = {}
-output['nnodes'] = nnodes
-output['nbonds'] = nbonds
-output['hist']  = hist.tolist()
-output['edges'] = edges.tolist()
-output['mean'] = "{0:.3f}".format(mean)
-output['std'] = "{0:.3f}".format(std)
+output['nnodes']  = nnodes
+output['nbonds']  = nbonds
+output['counts']  = counts.tolist()
+output['edges']   = edges.tolist()
+output['mean']    = "{0:.3f}".format(mean)
+output['std']     = "{0:.3f}".format(std)
 
 print json.dumps(output)
 

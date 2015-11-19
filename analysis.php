@@ -98,8 +98,7 @@ if(isset($_GET["ticket"]))
     if(!isset($data['output_files']))
     {
      system("/usr/bin/python netwpath.py $ticket $wpath $group1 $group2");
-     #system("/usr/bin/perl centrality.pl $wpath $adj $enerd $enerd $output");
-     system("/usr/bin/python centrality.py $adj $wpath $enerd $enerd $adj_dat $wpath_dat $dist_dat");
+     system("/usr/bin/python centrality.py $ticket $adj $wpath $enerd $enerd $adj_dat $wpath_dat $dist_dat");
      $cmd = "/var/www/html/centrality $nnodes $adj_dat $wpath_dat $dist_dat $dist_dat $output $effic; echo $?";
      exec($cmd,$out,$err);
      $count = count($out);

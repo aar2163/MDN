@@ -186,11 +186,14 @@ if(isset($_GET["ticket"]))
      if($valid)
      {
       echo '<p>Preparing the network. <a href="statusprepenergy.php?ticket='.$ticket.'">Check the status</a></p></div>';
-      #system("/usr/bin/php prepenecore.php $ticket $netindex > /dev/null &");
+
+      /* Submit the job to Torque Resource Manager */
       $pwd = getcwd();
       $hostname = gethostname();
+
       $qsub = "qsub -vTICKET=$ticket,INDEX=$netindex $pwd/job-qsub";
       $cmd = "ssh www-torque@$hostname '$qsub'";
+
       exec($cmd,$out,$err);
      }
      else

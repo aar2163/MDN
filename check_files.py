@@ -73,6 +73,10 @@ def do_atoms(atoms,path,software):
    atoms['nr'].append(int(d[0]))
 
    r = int(d[2])
+
+   """ 
+    Small sanity check
+   """ 
    if(corr_res + r < len(res)):
     corr_res = len(res)
 
@@ -225,7 +229,7 @@ def do_top_gromacs(data):
  try: 
   top = data['topology']
  except:
-  # This should not be necessary, but here just in case
+  # This should not be necessary, but it's here just in case
   read_top.read_top(data,False,True)
   top = data['topology']
 

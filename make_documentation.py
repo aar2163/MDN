@@ -4,6 +4,11 @@ import re
 from urlparse import urlparse
 import os.path
 
+"""
+ Prepares LaTex source for the User Manual
+ Usage: python make_documentation.py >> mdn.tex
+"""
+
 class Stack:
  def __init__(self):
   self.items = []

@@ -53,22 +53,58 @@ def do_table(columns):
   print '\end{tabular}'
   print '\end{table}'
 
+def print_img(fname, caption = None):
+ if not fname:
+  return
+
+ print '\\begin{figure}[H]'
+ print '\includegraphics[width=3.5in]{' + fname + '}'
+
+ if caption:
+  print '\caption{ \
+    {\\bf ' + caption + '} \
+}'
+
+ print '\end{figure}'
+
+def get_img_fname(i):
+ fname = None
+ if i.tag == 'img':
+  if 'latex' in i.attrib and i.attrib['latex'] == 'hide':
+   pass
+  else:
+   src = urlparse(i.attrib['src'])
+   fname = os.path.basename(src.path)
+ return fname
+
 def process_img(p):
+ caption = None
  for i in p:
   if i.tag == 'img':
-   if 'latex' in i.attrib and i.attrib['latex'] == 'hide':
-    pass
-   else:
-    src = urlparse(i.attrib['src'])
-    fname = os.path.basename(src.path)
-    print '\\begin{figure}[H]'
-    print '\includegraphics[width=3.5in]{' + fname + '}'
-    print '\end{figure}'
+   fname = get_img_fname(i)
+   print_img(fname)
 
-def process_url(url):
+  if i.tag == 'figure':
+   for j in i:
+    if j.tag == 'img':
+     fname = get_img_fname(j)
+    if j.tag == 'figcaption':
+     caption = j.text_content()
+     print_img(fname, caption)
+   p.remove(i)
+ return caption
+
+def process_url(url,appendices=False):
    
  page = requests.get(url)
  tree = html.fromstring(page.text)
+
+ if appendices:
+  level_1 = '\section{' 
+  level_2 = '\subsection{' 
+ else:
+  level_1 = '\subsection{' 
+  level_2 = '\subsubsection{' 
 
  for i in tree.body:
   if i.tag == 'div':
@@ -78,9 +114,9 @@ def process_url(url):
   
   if i.tag == 'h1':
    section = i.text_content()
-   print '\section{' + section + '}'
+   print level_1 + section + '}'
   if(i.tag == 'p'):
-   process_img(i)
+   caption = process_img(i)
    attrib = i.attrib
    text = i.text_content()
    text = re.sub(r'_',r'\_',text)
@@ -88,7 +124,7 @@ def process_url(url):
    if 'latex' in attrib and attrib['latex'] == 'hide':
     continue
    if 'latex' in attrib and attrib['latex'] == 'subsection':
-    print '\subsection{' + text + '}'
+    print level_2 + text + '}'
    else:
     print text + "\n"
  
@@ -102,21 +138,27 @@ for line in f:
 
 sections = Stack()
 
-url = ['http://mdn.cheme.columbia.edu/documentation/file-upload.php', \
-       'http://mdn.cheme.columbia.edu/documentation/choosing-groups.php', \
-       'http://mdn.cheme.columbia.edu/documentation/creating-groups.php', \
-       'http://mdn.cheme.columbia.edu/documentation/custom-nodes.php', \
-       'http://mdn.cheme.columbia.edu/documentation/network-construction.html', \
-       'http://mdn.cheme.columbia.edu/documentation/pathways.html', \
-       'http://mdn.cheme.columbia.edu/documentation/output.html']
+print "\\section{Main Steps}"
 
-[process_url(i) for i in url]
+main_steps = ['http://mdn.cheme.columbia.edu/documentation/file-upload.php', \
+              'http://mdn.cheme.columbia.edu/documentation/network-construction.php', \
+              'http://mdn.cheme.columbia.edu/documentation/pathways.php', \
+              'http://mdn.cheme.columbia.edu/documentation/output.php']
+
+[process_url(i) for i in main_steps]
+
+print "\\section{The Index File}"
+
+the_index = ['http://mdn.cheme.columbia.edu/documentation/choosing-groups.php', \
+             'http://mdn.cheme.columbia.edu/documentation/creating-groups.php']
+
+[process_url(i) for i in the_index]
 
 appendices = ['http://mdn.cheme.columbia.edu/documentation/file-size.php', \
               'http://mdn.cheme.columbia.edu/documentation/network-analysis.php']
 
 print "\\begin{appendices}"
-[process_url(i) for i in appendices]
+[process_url(i,appendices=True) for i in appendices]
 print "\\end{appendices}"
 
 print "\end{document}"
